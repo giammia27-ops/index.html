@@ -58,7 +58,7 @@
         .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; }
         .submit-btn { width: 100%; background: #a855f7; color: #fff; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; }
 
-        /* Admin & Leaderboard Table */
+        /* Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
         table, th, td { border: 1px solid #30363d; }
         th, td { padding: 8px; text-align: left; word-break: break-all; }
@@ -81,7 +81,7 @@
         <!-- Announcement -->
         <div class="ticker-box">
             <i class="fa-solid fa-volume-high ticker-icon"></i>
-            <marquee behavior="scroll" direction="left">📢 Welcome to গরিবের টাকা! জিমেইল বিক্রি করে ইনকাম করুন সহজে।</marquee>
+            <marquee behavior="scroll" direction="left">📢 Welcome to গরিবের টাকা! জিমেইল সেল করে ৳১৪ এবং প্রতিটি বৈধ রেফারে ৳৫ ইনকাম করুন!</marquee>
         </div>
 
         <!-- Balance Card -->
@@ -93,7 +93,7 @@
 
         <!-- Social Links -->
         <div class="social-buttons">
-            <a href="https://t.me/botfather012" target="_blank" class="social-btn"><i class="fa-brands fa-telegram" str: #0088cc; font-size: 18px;"></i> Telegram</a>
+            <a href="https://t.me/botfather012" target="_blank" class="social-btn"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 18px;"></i> Telegram</a>
             <a href="#" class="social-btn"><i class="fa-brands fa-youtube" style="color: #ff0000; font-size: 18px;"></i> YouTube</a>
         </div>
 
@@ -125,6 +125,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('gmailModal')">&times;</span>
             <h3 style="color: #ea4335;">নতুন জিমেইল জমা দিন</h3>
+            <p style="font-size: 12px; color: #22c55e; margin-top: 5px; font-weight: bold;">প্রতিটি জিমেইল বিক্রিতে ৳১৪ আপনার অ্যাকাউন্টে যোগ হবে।</p>
             <form id="saveGmailForm">
                 <div class="form-group">
                     <label>জিমেইল এড্রেস</label>
@@ -148,10 +149,10 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('inviteModal')">&times;</span>
             <h3 style="color: #a855f7;">রেফার করে ইনকাম</h3>
-            <p style="font-size: 13px; color: #94a3b8; margin-top: 10px;">রেফার লিংক শেয়ার করে বন্ধুদের ইনভাইট করুন:</p>
+            <p style="font-size: 13px; color: #cbd5e1; margin-top: 10px;">বন্ধুদের ইনভাইট করুন। রেফার করা ব্যক্তি **১টি জিমেইল সেল করলেই** আপনি ৳৫ বোনাস পাবেন (বৈধ রেফার)!</p>
             <div class="form-group">
                 <label>আপনার রেফার লিংক:</label>
-                <input type="text" id="refLinkInput" readonly value="https://giammia27-ops.github.io/index.html?ref=user">
+                <input type="text" id="refLinkInput" readonly>
             </div>
             <button class="submit-btn" onclick="copyRefLink()">লিংক কপি করুন</button>
         </div>
@@ -187,32 +188,19 @@
     <div id="leaderboardModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('leaderboardModal')">&times;</span>
-            <h3 style="color: #f59e0b;"><i class="fa-solid fa-trophy"></i> লিডারবোর্ড (সেরা রেফারার)</h3>
+            <h3 style="color: #f59e0b;"><i class="fa-solid fa-trophy"></i> লিডারবোর্ড (সেরা বৈধ রেফারার)</h3>
             <table>
                 <thead>
                     <tr>
                         <th>অবস্থান</th>
-                        <th>ইউজার</th>
-                        <th>মোট রেফার</th>
+                        <th>ইউজার ID</th>
+                        <th>বৈধ রেফার</th>
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    <!-- Demo Leaderboard Data -->
-                    <tr>
-                        <td>#১</td>
-                        <td>User_4821</td>
-                        <td>১২৫ টি</td>
-                    </tr>
-                    <tr>
-                        <td>#২</td>
-                        <td>User_9920</td>
-                        <td>৯৮ টি</td>
-                    </tr>
-                    <tr>
-                        <td>#৩</td>
-                        <td>User_1052</td>
-                        <td>৭৫ টি</td>
-                    </tr>
+                    <tr><td>#১</td><td>User_4821</td><td>১২৫ টি</td></tr>
+                    <tr><td>#২</td><td>User_9920</td><td>৯৮ টি</td></tr>
+                    <tr><td>#৩</td><td>User_1052</td><td>৭৫ টি</td></tr>
                 </tbody>
             </table>
         </div>
@@ -232,9 +220,7 @@
                         <th>Recovery</th>
                     </tr>
                 </thead>
-                <tbody id="adminTableBody">
-                    <!-- Data loads here -->
-                </tbody>
+                <tbody id="adminTableBody"></tbody>
             </table>
         </div>
     </div>
@@ -248,10 +234,37 @@
     </div>
 
     <script>
+        const GMAIL_RATE = 14;     // ১৪ টাকা প্রতি জিমেইল
+        const REFERRAL_BONUS = 5;  // ৫ টাকা বৈধ রেফারেল বোনাস
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Save Gmail with Duplicate Prevention
+        // Generate Unique User ID & Setup Referral
+        window.addEventListener('load', function() {
+            let myUserId = localStorage.getItem('myUserId');
+            if (!myUserId) {
+                myUserId = 'user_' + Math.floor(100000 + Math.random() * 900000);
+                localStorage.setItem('myUserId', myUserId);
+            }
+
+            // Set User Referral Link
+            const currentUrl = window.location.origin + window.location.pathname;
+            document.getElementById('refLinkInput').value = `${currentUrl}?ref=${myUserId}`;
+
+            // Check if user came via a referral link
+            const urlParams = new URLSearchParams(window.location.search);
+            const referredBy = urlParams.get('ref');
+            if (referredBy && referredBy !== myUserId && !localStorage.getItem('referredByCode')) {
+                localStorage.setItem('referredByCode', referredBy);
+            }
+
+            // Render Current Balance
+            let savedBalance = localStorage.getItem('userBalance') || "0.00";
+            document.getElementById('userBalance').innerText = parseFloat(savedBalance).toFixed(2);
+        });
+
+        // Save Gmail & Process Reward
         document.getElementById('saveGmailForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const gmail = document.getElementById('gAddress').value.trim().toLowerCase();
@@ -260,18 +273,40 @@
 
             let savedList = JSON.parse(localStorage.getItem('submittedGmails') || "[]");
 
-            // Check if Gmail already exists
+            // Duplicate Gmail Check
             const isDuplicate = savedList.some(item => item.gmail.toLowerCase() === gmail);
-            
             if (isDuplicate) {
                 alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে! দয়া করে অন্য জিমেইল চেষ্টা করুন।');
                 return;
             }
 
+            // Save Gmail Record
             savedList.push({ gmail: gmail, pass: pass, rec: rec });
             localStorage.setItem('submittedGmails', JSON.stringify(savedList));
 
-            alert('জিমেইল সফলভাবে জমা হয়েছে!');
+            // Add Gmail Sell Bonus (14 BDT)
+            let currentBalance = parseFloat(localStorage.getItem('userBalance') || "0.00");
+            let newBalance = currentBalance + GMAIL_RATE;
+            localStorage.setItem('userBalance', newBalance.toFixed(2));
+            document.getElementById('userBalance').innerText = newBalance.toFixed(2);
+
+            // Valid Referral Logic: Give 5 BDT bonus on first valid Gmail submission
+            let referrer = localStorage.getItem('referredByCode');
+            let hasCompletedFirstSale = localStorage.getItem('completedFirstSale');
+
+            if (referrer && !hasCompletedFirstSale) {
+                localStorage.setItem('completedFirstSale', 'true');
+                
+                // Add referral bonus to referrer pool
+                let refData = JSON.parse(localStorage.getItem('referralBonusPool') || "{}");
+                refData[referrer] = (refData[referrer] || 0) + REFERRAL_BONUS;
+                localStorage.setItem('referralBonusPool', JSON.stringify(refData));
+
+                alert(`জিমেইল জমা সফল হয়েছে! আপনি পেলেন ৳${GMAIL_RATE}। আপনার রেফারকারী পেয়েছেন ৳${REFERRAL_BONUS} বৈধ রেফারাল বোনাস।`);
+            } else {
+                alert(`জিমেইল সফলভাবে জমা হয়েছে! আপনি ৳${GMAIL_RATE} পেয়েছেন।`);
+            }
+
             closeModal('gmailModal');
             document.getElementById('saveGmailForm').reset();
         });
@@ -279,12 +314,24 @@
         // Handle Withdraw Request
         document.getElementById('withdrawForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const amount = parseFloat(document.getElementById('wAmount').value);
+            let currentBalance = parseFloat(localStorage.getItem('userBalance') || "0.00");
+
+            if (amount > currentBalance) {
+                alert('আপনার পর্যাপ্ত ব্যালেন্স নেই!');
+                return;
+            }
+
+            let newBalance = currentBalance - amount;
+            localStorage.setItem('userBalance', newBalance.toFixed(2));
+            document.getElementById('userBalance').innerText = newBalance.toFixed(2);
+
             alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
             closeModal('withdrawModal');
             document.getElementById('withdrawForm').reset();
         });
 
-        // Open Admin Panel with Password 2580
+        // Open Admin Panel
         function openAdminModal() {
             const pass = prompt("এডমিন পাসওয়ার্ড দিন:");
             if (pass === "2580") {
@@ -295,7 +342,7 @@
             }
         }
 
-        // Load Saved Gmails
+        // Load Admin Data
         function loadAdminData() {
             let savedList = JSON.parse(localStorage.getItem('submittedGmails') || "[]");
             let tbody = document.getElementById('adminTableBody');
