@@ -3,244 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>গরিবের টাকা - ড্যাশবোর্ড</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-        body { background-color: #0d1117; color: #ffffff; padding-bottom: 80px; }
-        
-        /* Top Navigation */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #0d1117; }
-        .logo { font-size: 20px; font-weight: bold; color: #c084fc; letter-spacing: 1px; }
-        .nav-icons { display: flex; gap: 12px; align-items: center; }
-        .icon-btn { background: #1f2937; border: none; color: #fff; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
-        .bell-icon { color: #38bdf8; }
-
-        .container { padding: 0 15px; }
-
-        /* Announcement Ticker */
-        .ticker-box { background: #161b22; border: 1px solid #30363d; padding: 10px 15px; border-radius: 25px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5e1; }
-        .ticker-icon { color: #38bdf8; font-size: 16px; }
-
-        /* Balance Card */
-        .balance-card { background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%); border-radius: 20px; padding: 22px; margin-bottom: 20px; position: relative; overflow: hidden; }
-        .balance-title { font-size: 13px; opacity: 0.9; margin-bottom: 5px; }
-        .balance-amount { font-size: 32px; font-weight: bold; }
-        .wallet-icon-bg { position: absolute; right: 20px; top: 20px; background: rgba(255, 255, 255, 0.2); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        
-        /* Social/Community Buttons */
-        .social-buttons { display: flex; gap: 12px; margin-bottom: 25px; }
-        .social-btn { flex: 1; background: #ffffff; color: #000; border-radius: 25px; padding: 12px; font-weight: bold; font-size: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* Section Heading */
-        .section-title { font-size: 16px; color: #94a3b8; margin-bottom: 15px; position: relative; padding-left: 10px; }
-        .section-title::before { content: ''; position: absolute; left: 0; top: 2px; bottom: 2px; width: 4px; background: #38bdf8; border-radius: 2px; }
-
-        /* Services Grid */
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-        .service-card { background: #ffffff; border-radius: 18px; padding: 15px 10px; text-align: center; color: #000; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; }
-        .service-card:active { transform: scale(0.98); }
-        .service-icon { font-size: 32px; margin-bottom: 8px; }
-        .service-title { font-size: 12px; font-weight: bold; color: #1e293b; }
-
-        /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0d1117; border-top: 1px solid #1f2937; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-        .nav-item { color: #64748b; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; cursor: pointer; }
-        .nav-item.active { color: #a855f7; }
-        .nav-item i { font-size: 18px; }
-
-        /* Modal Forms */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: #161b22; width: 100%; max-width: 400px; padding: 20px; border-radius: 15px; border: 1px solid #30363d; position: relative; max-height: 90vh; overflow-y: auto; }
-        .close-btn { position: absolute; right: 15px; top: 15px; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .form-group { margin-top: 15px; }
-        .form-group label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; }
-        .submit-btn { width: 100%; background: #a855f7; color: #fff; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        table, th, td { border: 1px solid #30363d; }
-        th, td { padding: 8px; text-align: left; word-break: break-all; }
-        th { background: #1f2937; color: #a855f7; }
-    </style>
+    <title>জিমেইল সেল ও উইথড্র সার্ভিস</title>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="navbar">
-        <i class="fa-solid fa-bars" style="font-size: 20px; color: #64748b;"></i>
-        <div class="logo">গরিবের টাকা</div>
-        <div class="nav-icons">
-            <button class="icon-btn"><i class="fa-solid fa-bell bell-icon"></i></button>
-            <button class="icon-btn" onclick="openAdminModal()"><i class="fa-solid fa-user-lock" style="color: #38bdf8;"></i></button>
-        </div>
-    </div>
+    <h2>গরিবের টাকা ড্যাশবোর্ড</h2>
+    <p><strong>বর্তমান ব্যালেন্স:</strong> ৳ <span id="userBalance">0.00</span></p>
 
-    <div class="container">
-        <!-- Announcement -->
-        <div class="ticker-box">
-            <i class="fa-solid fa-volume-high ticker-icon"></i>
-            <marquee behavior="scroll" direction="left">📢 Welcome to গরিবের টাকা! জিমেইল সেল করে ৳১৪ এবং প্রতিটি বৈধ রেফারে ৳৫ ইনকাম করুন!</marquee>
-        </div>
+    <hr>
 
-        <!-- Balance Card -->
-        <div class="balance-card">
-            <div class="wallet-icon-bg"><i class="fa-solid fa-wallet"></i></div>
-            <div class="balance-title">বর্তমান ব্যালেন্স</div>
-            <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
-        </div>
+    <!-- ১. জিমেইল সেল সেকশন -->
+    <h3>১. জিমেইল জমা দিন (প্রতি জিমেইল ৳১৪)</h3>
+    <form id="saveGmailForm">
+        <label>জিমেইল:</label><br>
+        <input type="email" id="gAddress" required placeholder="example@gmail.com"><br><br>
+        <label>পাসওয়ার্ড:</label><br>
+        <input type="text" id="gPass" required placeholder="পাসওয়ার্ড"><br><br>
+        <label>রিকভারি ইমেইল (ঐচ্ছিক):</label><br>
+        <input type="email" id="gRec" placeholder="recovery@example.com"><br><br>
+        <button type="submit">জমা দিন</button>
+    </form>
 
-        <!-- Social Links -->
-        <div class="social-buttons">
-            <a href="https://t.me/botfather012" target="_blank" class="social-btn"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 18px;"></i> Telegram</a>
-            <a href="#" class="social-btn"><i class="fa-brands fa-youtube" style="color: #ff0000; font-size: 18px;"></i> YouTube</a>
-        </div>
+    <hr>
 
-        <!-- Services Section -->
-        <div class="section-title">আমাদের সেবাসমূহ</div>
-        <div class="services-grid">
-            <!-- Gmail Service -->
-            <div class="service-card" onclick="openModal('gmailModal')">
-                <div class="service-icon" style="color: #ea4335;"><i class="fa-solid fa-envelope"></i></div>
-                <div class="service-title">Gmail Service</div>
-            </div>
+    <!-- ২. টাকা উত্তোলন সেকশন -->
+    <h3>২. টাকা তুলুন (সর্বনিম্ন ৳১০০)</h3>
+    <form id="withdrawForm">
+        <label>পেমেন্ট মেথড:</label><br>
+        <select id="wMethod">
+            <option value="bkash">বিকাশ</option>
+            <option value="nagad">নগদ</option>
+        </select><br><br>
+        <label>মোবাইল নম্বর:</label><br>
+        <input type="text" id="wPhone" required placeholder="017XXXXXXXX"><br><br>
+        <label>পরিমাণ (৳):</label><br>
+        <input type="number" id="wAmount" min="100" required placeholder="100"><br><br>
+        <button type="submit">উইথড্র রিকোয়েস্ট দিন</button>
+    </form>
 
-            <!-- Invite Section -->
-            <div class="service-card" onclick="openModal('inviteModal')">
-                <div class="service-icon" style="color: #a855f7;"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="service-title">Invite (রেফার)</div>
-            </div>
+    <hr>
 
-            <!-- Withdraw Section -->
-            <div class="service-card" onclick="openModal('withdrawModal')">
-                <div class="service-icon" style="color: #22c55e;"><i class="fa-solid fa-wallet"></i></div>
-                <div class="service-title">Withdraw</div>
-            </div>
-        </div>
-    </div>
+    <!-- ৩. রেফার সেকশন -->
+    <h3>৩. রেফার লিংক (প্রতি বৈধ রেফারে ৳৫)</h3>
+    <input type="text" id="refLinkInput" readonly style="width: 80%;">
+    <button onclick="copyRefLink()">কপি করুন</button>
 
-    <!-- Gmail Modal -->
-    <div id="gmailModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('gmailModal')">&times;</span>
-            <h3 style="color: #ea4335;">নতুন জিমেইল জমা দিন</h3>
-            <p style="font-size: 12px; color: #22c55e; margin-top: 5px; font-weight: bold;">প্রতিটি জিমেইল বিক্রিতে ৳১৪ আপনার অ্যাকাউন্টে যোগ হবে।</p>
-            <form id="saveGmailForm">
-                <div class="form-group">
-                    <label>জিমেইল এড্রেস</label>
-                    <input type="email" id="gAddress" required placeholder="example@gmail.com">
-                </div>
-                <div class="form-group">
-                    <label>পাসওয়ার্ড</label>
-                    <input type="text" id="gPass" required placeholder="জিমেইলের পাসওয়ার্ড">
-                </div>
-                <div class="form-group">
-                    <label>রিকভারি ইমেইল (যদি থাকে)</label>
-                    <input type="email" id="gRec" placeholder="recovery@example.com">
-                </div>
-                <button type="submit" class="submit-btn">জমা দিন</button>
-            </form>
-        </div>
-    </div>
+    <hr>
 
-    <!-- Invite Modal -->
-    <div id="inviteModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('inviteModal')">&times;</span>
-            <h3 style="color: #a855f7;">রেফার করে ইনকাম</h3>
-            <p style="font-size: 13px; color: #cbd5e1; margin-top: 10px;">বন্ধুদের ইনভাইট করুন। রেফার করা ব্যক্তি **১টি জিমেইল সেল করলেই** আপনি ৳৫ বোনাস পাবেন (বৈধ রেফার)!</p>
-            <div class="form-group">
-                <label>আপনার রেফার লিংক:</label>
-                <input type="text" id="refLinkInput" readonly>
-            </div>
-            <button class="submit-btn" onclick="copyRefLink()">লিংক কপি করুন</button>
-        </div>
-    </div>
+    <!-- ৪. এডমিন প্যানেল সেকশন -->
+    <h3>৪. এডমিন প্যানেল</h3>
+    <button onclick="openAdminModal()">এডমিন প্যানেল খুলুন</button>
 
-    <!-- Withdraw Modal -->
-    <div id="withdrawModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('withdrawModal')">&times;</span>
-            <h3 style="color: #22c55e;">টাকা তুলুন (Withdraw)</h3>
-            <form id="withdrawForm">
-                <div class="form-group">
-                    <label>পেমেন্ট মেথড</label>
-                    <select id="wMethod">
-                        <option value="bkash">বিকাশ (bKash)</option>
-                        <option value="nagad">নগদ (Nagad)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>পার্সোনাল মোবাইল নম্বর</label>
-                    <input type="text" id="wPhone" required placeholder="017XXXXXXXX">
-                </div>
-                <div class="form-group">
-                    <label>পরিমাণ (সর্বনিম্ন ৳ ১০০)</label>
-                    <input type="number" id="wAmount" min="100" required placeholder="100">
-                </div>
-                <button type="submit" class="submit-btn" style="background: #22c55e;">উইথড্র রিকোয়েস্ট দিন</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Leaderboard Modal -->
-    <div id="leaderboardModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('leaderboardModal')">&times;</span>
-            <h3 style="color: #f59e0b;"><i class="fa-solid fa-trophy"></i> লিডারবোর্ড (সেরা বৈধ রেফারার)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>অবস্থান</th>
-                        <th>ইউজার ID</th>
-                        <th>বৈধ রেফার</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <tr><td>#১</td><td>User_4821</td><td>১২৫ টি</td></tr>
-                    <tr><td>#২</td><td>User_9920</td><td>৯৮ টি</td></tr>
-                    <tr><td>#৩</td><td>User_1052</td><td>৭৫ টি</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Admin Panel Modal -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
-            <h3 style="color: #38bdf8;">এডমিন প্যানেল</h3>
-            <button class="submit-btn" style="background: #ef4444; margin-bottom: 10px;" onclick="clearData()">সব তথ্য মুছে ফেলুন</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Gmail</th>
-                        <th>Password</th>
-                        <th>Recovery</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i>Home</a>
-        <a href="#" class="nav-item" onclick="openModal('leaderboardModal')"><i class="fa-solid fa-trophy"></i>Leadership</a>
-        <a href="#" class="nav-item" onclick="openModal('withdrawModal')"><i class="fa-solid fa-wallet"></i>Income</a>
-        <a href="#" class="nav-item" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i>Admin</a>
+    <div id="adminArea" style="display: none; margin-top: 15px; border: 1px solid #000; padding: 10px;">
+        <h4>জমা পড়া জিমেইল তালিকা</h4>
+        <button onclick="clearData()" style="color: red;">সব ডাটা মুছুন</button><br><br>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Gmail</th>
+                    <th>Password</th>
+                    <th>Recovery</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
     </div>
 
     <script>
         const GMAIL_RATE = 14;     // ১৪ টাকা প্রতি জিমেইল
-        const REFERRAL_BONUS = 5;  // ৫ টাকা বৈধ রেফারেল বোনাস
+        const REFERRAL_BONUS = 5;  // ৫ টাকা বৈধ রেফার বোনাস
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        // Generate Unique User ID & Setup Referral
+        // পেইজ লোড হওয়ার সাথে সাথে আইডি ও ব্যালেন্স সেটআপ
         window.addEventListener('load', function() {
             let myUserId = localStorage.getItem('myUserId');
             if (!myUserId) {
@@ -248,23 +81,23 @@
                 localStorage.setItem('myUserId', myUserId);
             }
 
-            // Set User Referral Link
+            // রেফার লিংক তৈরি
             const currentUrl = window.location.origin + window.location.pathname;
             document.getElementById('refLinkInput').value = `${currentUrl}?ref=${myUserId}`;
 
-            // Check if user came via a referral link
+            // রেফারেন্স চেকিং
             const urlParams = new URLSearchParams(window.location.search);
             const referredBy = urlParams.get('ref');
             if (referredBy && referredBy !== myUserId && !localStorage.getItem('referredByCode')) {
                 localStorage.setItem('referredByCode', referredBy);
             }
 
-            // Render Current Balance
+            // ব্যালেন্স রেন্ডার
             let savedBalance = localStorage.getItem('userBalance') || "0.00";
             document.getElementById('userBalance').innerText = parseFloat(savedBalance).toFixed(2);
         });
 
-        // Save Gmail & Process Reward
+        // জিমেইল সেভ ও বোনাস হিসাব
         document.getElementById('saveGmailForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const gmail = document.getElementById('gAddress').value.trim().toLowerCase();
@@ -273,45 +106,42 @@
 
             let savedList = JSON.parse(localStorage.getItem('submittedGmails') || "[]");
 
-            // Duplicate Gmail Check
+            // ডুप्लिकোট চেক
             const isDuplicate = savedList.some(item => item.gmail.toLowerCase() === gmail);
             if (isDuplicate) {
-                alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে! দয়া করে অন্য জিমেইল চেষ্টা করুন।');
+                alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে!');
                 return;
             }
 
-            // Save Gmail Record
+            // জিমেইল সংরক্ষণ
             savedList.push({ gmail: gmail, pass: pass, rec: rec });
             localStorage.setItem('submittedGmails', JSON.stringify(savedList));
 
-            // Add Gmail Sell Bonus (14 BDT)
+            // সেল বোনাস যোগ (৳১৪)
             let currentBalance = parseFloat(localStorage.getItem('userBalance') || "0.00");
             let newBalance = currentBalance + GMAIL_RATE;
             localStorage.setItem('userBalance', newBalance.toFixed(2));
             document.getElementById('userBalance').innerText = newBalance.toFixed(2);
 
-            // Valid Referral Logic: Give 5 BDT bonus on first valid Gmail submission
+            // বৈধ রেফারেল বোনাস লজিক (৳৫)
             let referrer = localStorage.getItem('referredByCode');
             let hasCompletedFirstSale = localStorage.getItem('completedFirstSale');
 
             if (referrer && !hasCompletedFirstSale) {
                 localStorage.setItem('completedFirstSale', 'true');
-                
-                // Add referral bonus to referrer pool
                 let refData = JSON.parse(localStorage.getItem('referralBonusPool') || "{}");
                 refData[referrer] = (refData[referrer] || 0) + REFERRAL_BONUS;
                 localStorage.setItem('referralBonusPool', JSON.stringify(refData));
 
-                alert(`জিমেইল জমা সফল হয়েছে! আপনি পেলেন ৳${GMAIL_RATE}। আপনার রেফারকারী পেয়েছেন ৳${REFERRAL_BONUS} বৈধ রেফারাল বোনাস।`);
+                alert(`জিমেইল জমা সফল হয়েছে! আপনি পেয়েছেন ৳${GMAIL_RATE}। আপনার রেফারকারী পেয়েছেন ৳${REFERRAL_BONUS} বোনাস।`);
             } else {
                 alert(`জিমেইল সফলভাবে জমা হয়েছে! আপনি ৳${GMAIL_RATE} পেয়েছেন।`);
             }
 
-            closeModal('gmailModal');
             document.getElementById('saveGmailForm').reset();
         });
 
-        // Handle Withdraw Request
+        // উইথড্র রিকোয়েস্ট
         document.getElementById('withdrawForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('wAmount').value);
@@ -326,30 +156,29 @@
             localStorage.setItem('userBalance', newBalance.toFixed(2));
             document.getElementById('userBalance').innerText = newBalance.toFixed(2);
 
-            alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
-            closeModal('withdrawModal');
+            alert('উইথড্র রিকোয়েস্ট সফলভাবে সম্পন্ন হয়েছে!');
             document.getElementById('withdrawForm').reset();
         });
 
-        // Open Admin Panel
+        // এডমিন প্যানেল যাচাই (পাসওয়ার্ড: 2580)
         function openAdminModal() {
             const pass = prompt("এডমিন পাসওয়ার্ড দিন:");
             if (pass === "2580") {
                 loadAdminData();
-                openModal('adminModal');
-            } else if(pass !== null) {
+                document.getElementById('adminArea').style.display = 'block';
+            } else if (pass !== null) {
                 alert("ভুল পাসওয়ার্ড!");
             }
         }
 
-        // Load Admin Data
+        // এডমিন ডাটা রেন্ডার
         function loadAdminData() {
             let savedList = JSON.parse(localStorage.getItem('submittedGmails') || "[]");
             let tbody = document.getElementById('adminTableBody');
             tbody.innerHTML = "";
-            
-            if(savedList.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>কোনো জিমেইল জমা পড়েনি</td></tr>";
+
+            if (savedList.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3'>কোনো জিমেইল জমা পড়েনি</td></tr>";
                 return;
             }
 
@@ -362,14 +191,15 @@
             });
         }
 
-        // Clear Admin Data
+        // ডাটা রিসেট
         function clearData() {
-            if(confirm("আপনি কি জমা পড়া সব জিমেইল মুছে ফেলতে চান?")) {
+            if (confirm("সব জমা পড়া জিমেইল মুছে ফেলতে চান?")) {
                 localStorage.removeItem('submittedGmails');
                 loadAdminData();
             }
         }
 
+        // রেফার লিংক কপি
         function copyRefLink() {
             var copyText = document.getElementById("refLinkInput");
             copyText.select();
