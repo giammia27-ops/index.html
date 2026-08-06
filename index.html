@@ -25,12 +25,9 @@
         /* Balance Card */
         .balance-card { background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%); border-radius: 20px; padding: 22px; margin-bottom: 20px; position: relative; overflow: hidden; }
         .balance-title { font-size: 13px; opacity: 0.9; margin-bottom: 5px; }
-        .balance-amount { font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+        .balance-amount { font-size: 32px; font-weight: bold; }
         .wallet-icon-bg { position: absolute; right: 20px; top: 20px; background: rgba(255, 255, 255, 0.2); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         
-        .card-buttons { display: flex; gap: 12px; }
-        .card-btn { flex: 1; padding: 12px; border: none; border-radius: 20px; background: rgba(255, 255, 255, 0.25); color: #fff; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; backdrop-filter: blur(5px); }
-
         /* Social/Community Buttons */
         .social-buttons { display: flex; gap: 12px; margin-bottom: 25px; }
         .social-btn { flex: 1; background: #ffffff; color: #000; border-radius: 25px; padding: 12px; font-weight: bold; font-size: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -61,7 +58,7 @@
         .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 14px; }
         .submit-btn { width: 100%; background: #a855f7; color: #fff; border: none; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; }
 
-        /* Admin Table */
+        /* Admin & Leaderboard Table */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
         table, th, td { border: 1px solid #30363d; }
         th, td { padding: 8px; text-align: left; word-break: break-all; }
@@ -92,14 +89,11 @@
             <div class="wallet-icon-bg"><i class="fa-solid fa-wallet"></i></div>
             <div class="balance-title">বর্তমান ব্যালেন্স</div>
             <div class="balance-amount">৳ <span id="userBalance">0.00</span></div>
-            <div class="card-buttons">
-                <button class="card-btn" style="width: 100%;" onclick="openModal('withdrawModal')"><i class="fa-solid fa-arrow-up"></i> WITHDRAW (টাকা তুলুন)</button>
-            </div>
         </div>
 
         <!-- Social Links -->
         <div class="social-buttons">
-            <a href="#" class="social-btn"><i class="fa-brands fa-telegram" style="color: #0088cc; font-size: 18px;"></i> Telegram</a>
+            <a href="https://t.me/botfather012" target="_blank" class="social-btn"><i class="fa-brands fa-telegram" str: #0088cc; font-size: 18px;"></i> Telegram</a>
             <a href="#" class="social-btn"><i class="fa-brands fa-youtube" style="color: #ff0000; font-size: 18px;"></i> YouTube</a>
         </div>
 
@@ -154,7 +148,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('inviteModal')">&times;</span>
             <h3 style="color: #a855f7;">রেফার করে ইনকাম</h3>
-            <p style="font-size: 13px; color: #94a3b8; margin-top: 10px;">রেফার লিংক শেয়ার করে বন্ধুদের ইনভাইট করুন:</p>
+            <p style="font-size: 13px; color: #94a3b8; margin-top: 10px;">রেফার লিংক শেয়ার করে বন্ধুদের ইনভাইট করুন:</p>
             <div class="form-group">
                 <label>আপনার রেফার লিংক:</label>
                 <input type="text" id="refLinkInput" readonly value="https://giammia27-ops.github.io/index.html?ref=user">
@@ -189,6 +183,41 @@
         </div>
     </div>
 
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('leaderboardModal')">&times;</span>
+            <h3 style="color: #f59e0b;"><i class="fa-solid fa-trophy"></i> লিডারবোর্ড (সেরা রেফারার)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>অবস্থান</th>
+                        <th>ইউজার</th>
+                        <th>মোট রেফার</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Demo Leaderboard Data -->
+                    <tr>
+                        <td>#১</td>
+                        <td>User_4821</td>
+                        <td>১২৫ টি</td>
+                    </tr>
+                    <tr>
+                        <td>#২</td>
+                        <td>User_9920</td>
+                        <td>৯৮ টি</td>
+                    </tr>
+                    <tr>
+                        <td>#৩</td>
+                        <td>User_1052</td>
+                        <td>৭৫ টি</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Admin Panel Modal -->
     <div id="adminModal" class="modal">
         <div class="modal-content">
@@ -213,7 +242,7 @@
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i>Home</a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-trophy"></i>Leadership</a>
+        <a href="#" class="nav-item" onclick="openModal('leaderboardModal')"><i class="fa-solid fa-trophy"></i>Leadership</a>
         <a href="#" class="nav-item" onclick="openModal('withdrawModal')"><i class="fa-solid fa-wallet"></i>Income</a>
         <a href="#" class="nav-item" onclick="openAdminModal()"><i class="fa-solid fa-lock"></i>Admin</a>
     </div>
@@ -222,18 +251,27 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Save Gmail
+        // Save Gmail with Duplicate Prevention
         document.getElementById('saveGmailForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const gmail = document.getElementById('gAddress').value;
+            const gmail = document.getElementById('gAddress').value.trim().toLowerCase();
             const pass = document.getElementById('gPass').value;
-            const rec = document.getElementById('gRec').value || 'নেই';
+            const rec = document.getElementById('gRec').value.trim() || 'নেই';
 
             let savedList = JSON.parse(localStorage.getItem('submittedGmails') || "[]");
+
+            // Check if Gmail already exists
+            const isDuplicate = savedList.some(item => item.gmail.toLowerCase() === gmail);
+            
+            if (isDuplicate) {
+                alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে! দয়া করে অন্য জিমেইল চেষ্টা করুন।');
+                return;
+            }
+
             savedList.push({ gmail: gmail, pass: pass, rec: rec });
             localStorage.setItem('submittedGmails', JSON.stringify(savedList));
 
-            alert('জিমেইল সফলভাবে জমা হয়েছে!');
+            alert('জিমেইল সফলভাবে জমা হয়েছে!');
             closeModal('gmailModal');
             document.getElementById('saveGmailForm').reset();
         });
@@ -241,19 +279,19 @@
         // Handle Withdraw Request
         document.getElementById('withdrawForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
+            alert('উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
             closeModal('withdrawModal');
             document.getElementById('withdrawForm').reset();
         });
 
         // Open Admin Panel with Password 2580
         function openAdminModal() {
-            const pass = prompt("এডমিন পাসওয়ার্ড দিন:");
+            const pass = prompt("এডমিন পাসওয়ার্ড দিন:");
             if (pass === "2580") {
                 loadAdminData();
                 openModal('adminModal');
             } else if(pass !== null) {
-                alert("ভুল পাসওয়ার্ড!");
+                alert("ভুল পাসওয়ার্ড!");
             }
         }
 
@@ -264,7 +302,7 @@
             tbody.innerHTML = "";
             
             if(savedList.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>কোনো জিমেইল জমা পড়েনি</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>কোনো জিমেইল জমা পড়েনি</td></tr>";
                 return;
             }
 
@@ -279,7 +317,7 @@
 
         // Clear Admin Data
         function clearData() {
-            if(confirm("আপনি কি জমা পড়া সব জিমেইল মুছে ফেলতে চান?")) {
+            if(confirm("আপনি কি জমা পড়া সব জিমেইল মুছে ফেলতে চান?")) {
                 localStorage.removeItem('submittedGmails');
                 loadAdminData();
             }
@@ -289,7 +327,7 @@
             var copyText = document.getElementById("refLinkInput");
             copyText.select();
             navigator.clipboard.writeText(copyText.value);
-            alert("রেফার লিংক কপি হয়েছে!");
+            alert("রেফার লিংক কপি হয়েছে!");
         }
     </script>
 </body>
