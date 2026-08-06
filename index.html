@@ -276,7 +276,7 @@
             // Duplicate Gmail Check
             const isDuplicate = savedList.some(item => item.gmail.toLowerCase() === gmail);
             if (isDuplicate) {
-                alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে! দয়া করে অন্য জিমেইল চেষ্টা করুন।');
+                alert('এই জিমেইলটি ইতোমধ্যে জমা দেওয়া হয়েছে! দয়া করে অন্য জিমেইল চেষ্টা করুন।');
                 return;
             }
 
@@ -302,9 +302,9 @@
                 refData[referrer] = (refData[referrer] || 0) + REFERRAL_BONUS;
                 localStorage.setItem('referralBonusPool', JSON.stringify(refData));
 
-                alert(`জিমেইল জমা সফল হয়েছে! আপনি পেলেন ৳${GMAIL_RATE}। আপনার রেফারকারী পেয়েছেন ৳${REFERRAL_BONUS} বৈধ রেফারাল বোনাস।`);
+                alert(`জিমেইল জমা সফল হয়েছে! আপনি পেলেন ৳${GMAIL_RATE}। আপনার রেফারকারী পেয়েছেন ৳${REFERRAL_BONUS} বৈধ রেফারাল বোনাস।`);
             } else {
-                alert(`জিমেইল সফলভাবে জমা হয়েছে! আপনি ৳${GMAIL_RATE} পেয়েছেন।`);
+                alert(`জিমেইল সফলভাবে জমা হয়েছে! আপনি ৳${GMAIL_RATE} পেয়েছেন।`);
             }
 
             closeModal('gmailModal');
@@ -378,4 +378,4 @@
         }
     </script>
 </body>
-</html>>
+</html>
