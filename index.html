@@ -8,24 +8,27 @@
         * { box-sizing: border-box; font-family: Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; color: #333; padding: 15px; }
         .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2, h3 { text-align: center; color: #2c3e50; margin-bottom: 15px; }
-        .btn { width: 100%; padding: 10px; background: #27ae60; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        h2, h3, h4 { text-align: center; color: #2c3e50; margin-bottom: 12px; }
+        .btn { width: 100%; padding: 10px; background: #27ae60; color: #fff; border: none; border-radius: 5px; font-size: 15px; cursor: pointer; margin-top: 8px; font-weight: bold; }
         .btn:hover { background: #219150; }
         .btn-danger { background: #e74c3c; }
-        .btn-telegram { background: #0088cc; text-decoration: none; display: block; text-align: center; color: white; padding: 10px; border-radius: 5px; margin-top: 10px; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .btn-telegram { background: #0088cc; text-decoration: none; display: block; text-align: center; color: white; padding: 10px; border-radius: 5px; margin-top: 8px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 5px; }
         .balance-card { background: #34495e; color: #fff; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; }
-        .card { background: #eef2f7; padding: 12px; margin: 10px 0; border-radius: 6px; border-left: 4px solid #3498db; }
+        .card { background: #eef2f7; padding: 12px; margin: 12px 0; border-radius: 6px; border-left: 4px solid #3498db; }
         .hidden { display: none; }
-        .tab-btn { width: 48%; display: inline-block; padding: 8px; text-align: center; background: #ddd; cursor: pointer; border-radius: 4px; }
+        .tab-btn { width: 48%; display: inline-block; padding: 8px; text-align: center; background: #ddd; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .tab-btn.active { background: #3498db; color: #fff; }
         .job-item { background: #fff; padding: 10px; border-radius: 5px; margin-top: 8px; border: 1px solid #ddd; }
+        .ref-box { background: #fff3cd; color: #856404; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin: 6px 0; }
+        .proof-box { background: #e8f8f5; border: 1px dashed #1abc9c; padding: 10px; border-radius: 5px; margin-top: 10px; }
     </style>
 
-    <!-- Firebase Compat SDK (HTML ফাইল থেকে কাজ করানোর জন্য) -->
+    <!-- Firebase Compat SDKs (Storage সহ) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 
@@ -52,7 +55,7 @@
             <input type="text" id="reg-name" placeholder="আপনার নাম" required>
             <input type="email" id="reg-email" placeholder="ইমেইল দিন" required>
             <input type="password" id="reg-pass" placeholder="পাসওয়ার্ড দিন" required>
-            <input type="text" id="ref-code" placeholder="রেফার কোড (ঐচ্ছিক)">
+            <input type="text" id="ref-code-input" placeholder="রেফার কোড (যদি থাকে)">
             <button class="btn" type="submit">রেজিস্ট্রেশন করুন (+১০৳ বোনাস)</button>
         </form>
     </div>
@@ -67,10 +70,43 @@
             <h1 id="user-balance">০.০০ ৳</h1>
         </div>
 
+        <!-- Refer Section -->
+        <div class="card" style="border-left-color: #27ae60;">
+            <h4>👥 রেফার করে ইনকাম</h4>
+            <p><small>আপনার রেফার কোড ব্যবহার করে অ্যাকাউন্ট খুললে প্রতি রেফারে পাবেন ৫ টাকা!</small></p>
+            <div class="ref-box" id="my-ref-code">আপনার কোড: ...</div>
+        </div>
+
+        <!-- Gmail Sell Section -->
+        <div class="card" style="border-left-color: #9b59b6;">
+            <h4>📧 জিমেইল বিক্রি করুন (প্রতিটি ১০৳ - ১৫৳)</h4>
+            <input type="email" id="sell-gmail-email" placeholder="জিমেইল এড্রেস">
+            <input type="text" id="sell-gmail-pass" placeholder="পাসওয়ার্ড">
+            <input type="email" id="sell-gmail-rec" placeholder="রিকভারি ইমেইল">
+            <button class="btn" style="background:#9b59b6;" onclick="submitGmailSell()">জিমেইল জমা দিন</button>
+        </div>
+
+        <!-- Micro Jobs List & Proof Area -->
+        <div class="card" style="border-left-color: #1abc9c;">
+            <h4>💼 মাইক্রো জব (কাজ করুন ও স্ক্রিনশট দিন)</h4>
+            <div id="active-job-list">
+                <p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>
+            </div>
+
+            <!-- Proof Submission Box -->
+            <div id="proof-submission-area" class="proof-box hidden">
+                <h5 id="selected-job-title" style="margin-bottom:8px; color:#16a085;">কাজের নাম</h5>
+                <textarea id="job-proof-text" placeholder="কাজের প্রমাণের বিবরণ লিখুন (যেমন: ইউজারনেম/কমেন্ট)..." rows="2"></textarea>
+                <label style="font-size:12px; font-weight:bold;">প্রমাণের স্ক্রিনশট/ছবি দিন:</label>
+                <input type="file" id="job-proof-image" accept="image/*">
+                <button class="btn" style="background:#1abc9c;" onclick="submitJobProofWithImage()">প্রমাণ ও স্ক্রিনশট জমা দিন</button>
+                <button class="btn btn-danger" style="padding:5px; font-size:12px;" onclick="closeProofArea()">বাতিল করুন</button>
+            </div>
+        </div>
+
         <!-- Telegram Task -->
         <div class="card">
             <h4>📢 টেলিগ্রাম চ্যানেলে জয়েন করুন</h4>
-            <p>আমাদের টেলিগ্রামে অফিশিয়াল ইনকাম ট্রিক দেওয়া হয়। জয়েন করলেই পাবেন ৫ টাকা!</p>
             <a href="https://t.me/botfather012" target="_blank" class="btn-telegram">টেলিগ্রামে জয়েন করুন ❤️</a>
             <button class="btn" style="background:#2980b9;" onclick="claimTelegramBonus()">বোনাস দাবি করুন (+৫৳)</button>
         </div>
@@ -88,14 +124,6 @@
             <textarea id="job-desc" placeholder="কাজের বিবরণ লিখুন..." rows="2"></textarea>
             <input type="number" id="job-reward" placeholder="ইউজার কত টাকা পাবে?">
             <button class="btn" style="background:#e67e22;" onclick="submitJobPost()">জব পোস্ট জমা দিন</button>
-        </div>
-
-        <!-- Micro Jobs & Job List -->
-        <div class="card">
-            <h4>💼 মাইক্রো জব ও এপ্রুভড কাজ</h4>
-            <div id="active-job-list">
-                <p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>
-            </div>
         </div>
 
         <!-- Withdraw -->
@@ -117,7 +145,6 @@
 </div>
 
 <script>
-    // আপনার আপডেট করা নিখুঁত ফায়ারবেস কনফিগারেশন
     const firebaseConfig = {
         apiKey: "AIzaSyDP4p2d95_JzBSeUcSiwVlOqd61eZ6Gnfo",
         authDomain: "earnmoney1k-fdc54.firebaseapp.com",
@@ -128,14 +155,14 @@
         measurementId: "G-W24EV40P9Q"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     let currentUserData = null;
+    let selectedJobForProof = null;
 
-    // Authentication State Listener
     auth.onAuthStateChanged(user => {
         if (user) {
             loadUserData(user.uid);
@@ -158,21 +185,34 @@
         }
     }
 
-    // Firebase Registration
     async function handleRegister(e) {
         e.preventDefault();
         const name = document.getElementById('reg-name').value;
         const email = document.getElementById('reg-email').value;
         const pass = document.getElementById('reg-pass').value;
+        const refCodeInput = document.getElementById('ref-code-input').value.trim();
 
         try {
             const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
             const user = userCredential.user;
+            const myRefCode = "REF" + Math.floor(100000 + Math.random() * 900000);
+
+            if (refCodeInput !== "") {
+                const referrerQuery = await db.collection("users").where("referCode", "==", refCodeInput).get();
+                if (!referrerQuery.empty) {
+                    const referrerDoc = referrerQuery.docs[0];
+                    const currentBalance = referrerDoc.data().balance || 0;
+                    await db.collection("users").doc(referrerDoc.id).update({
+                        balance: currentBalance + 5
+                    });
+                }
+            }
 
             await db.collection("users").doc(user.uid).set({
                 name: name,
                 email: email,
                 balance: 10,
+                referCode: myRefCode,
                 telegramClaimed: false,
                 dailyBonusClaimed: false,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -184,7 +224,6 @@
         }
     }
 
-    // Firebase Login
     async function handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
@@ -197,13 +236,13 @@
         }
     }
 
-    // Load User Profile Data
     function loadUserData(uid) {
         db.collection("users").doc(uid).onSnapshot(doc => {
             if (doc.exists) {
                 currentUserData = doc.data();
                 document.getElementById('user-name-display').innerText = currentUserData.name;
                 document.getElementById('user-balance').innerText = currentUserData.balance.toFixed(2) + " ৳";
+                document.getElementById('my-ref-code').innerText = "আপনার রেফার কোড: " + (currentUserData.referCode || 'N/A');
                 showDashboardSection();
             }
         });
@@ -225,7 +264,94 @@
         auth.signOut();
     }
 
-    // Claim Telegram Bonus
+    // Open Proof Submission Section
+    function openJobProofForm(jobId, jobTitle, reward) {
+        selectedJobForProof = { id: jobId, title: jobTitle, reward: reward };
+        document.getElementById('selected-job-title').innerText = "কাজ: " + jobTitle;
+        document.getElementById('proof-submission-area').classList.remove('hidden');
+    }
+
+    function closeProofArea() {
+        selectedJobForProof = null;
+        document.getElementById('proof-submission-area').classList.add('hidden');
+    }
+
+    // Submit Proof with Screenshot
+    async function submitJobProofWithImage() {
+        if (!selectedJobForProof) return;
+
+        const proofText = document.getElementById('job-proof-text').value;
+        const fileInput = document.getElementById('job-proof-image');
+        const file = fileInput.files[0];
+
+        if (!proofText && !file) {
+            alert('কাজের বিবরণ লিখুন অথবা স্ক্রিনশট সিলেক্ট করুন!');
+            return;
+        }
+
+        const user = auth.currentUser;
+        let imageUrl = "";
+
+        try {
+            // Upload Screenshot if provided
+            if (file) {
+                const storageRef = storage.ref(`job_proofs/${user.uid}_${Date.now()}_${file.name}`);
+                const snapshot = await storageRef.put(file);
+                imageUrl = await snapshot.ref.getDownloadURL();
+            }
+
+            await db.collection("job_proofs").add({
+                jobId: selectedJobForProof.id,
+                jobTitle: selectedJobForProof.title,
+                userId: user.uid,
+                userEmail: currentUserData.email,
+                proofText: proofText,
+                screenshotUrl: imageUrl,
+                reward: selectedJobForProof.reward,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('job-proof-text').value = '';
+            fileInput.value = '';
+            closeProofArea();
+            alert('আপনার কাজের প্রমাণের বিবরণ ও স্ক্রিনশট জমা হয়েছে!');
+        } catch (error) {
+            alert('জমা দেওয়া সম্ভব হয়নি: ' + error.message);
+        }
+    }
+
+    async function submitGmailSell() {
+        const user = auth.currentUser;
+        const gEmail = document.getElementById('sell-gmail-email').value;
+        const gPass = document.getElementById('sell-gmail-pass').value;
+        const gRec = document.getElementById('sell-gmail-rec').value;
+
+        if(!gEmail || !gPass || !gRec) {
+            alert('জিমেইলের সমস্ত তথ্য পুরন করুন!');
+            return;
+        }
+
+        try {
+            await db.collection("gmail_sales").add({
+                userId: user.uid,
+                userEmail: currentUserData.email,
+                gmailAddress: gEmail,
+                gmailPassword: gPass,
+                recoveryEmail: gRec,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('sell-gmail-email').value = '';
+            document.getElementById('sell-gmail-pass').value = '';
+            document.getElementById('sell-gmail-rec').value = '';
+            alert('জিমেইল বিক্রির তথ্য জমা হয়েছে!');
+        } catch (error) {
+            alert('ত্রুটি: ' + error.message);
+        }
+    }
+
     async function claimTelegramBonus() {
         const user = auth.currentUser;
         if (!user || !currentUserData) return;
@@ -243,7 +369,6 @@
         alert('টেলিগ্রাম জয়েন বোনাস ৫ টাকা যোগ করা হয়েছে!');
     }
 
-    // Claim Daily Bonus
     async function claimDailyBonus() {
         const user = auth.currentUser;
         if (!user || !currentUserData) return;
@@ -261,7 +386,6 @@
         alert('ডেইলি বোনাস ২ টাকা যোগ করা হয়েছে!');
     }
 
-    // Submit Job Post
     async function submitJobPost() {
         const user = auth.currentUser;
         const title = document.getElementById('job-title').value;
@@ -269,7 +393,7 @@
         const reward = parseFloat(document.getElementById('job-reward').value);
 
         if(!title || !desc || !reward) {
-            alert('জব পোস্টের সবকটি তথ্য সঠিকভাবে লিখুন!');
+            alert('জব পোস্টের তথ্য সঠিক নয়!');
             return;
         }
 
@@ -286,13 +410,12 @@
             document.getElementById('job-title').value = '';
             document.getElementById('job-desc').value = '';
             document.getElementById('job-reward').value = '';
-            alert('জব পোস্ট সফলভাবে যুক্ত হয়েছে!');
+            alert('জব পোস্ট করা হয়েছে!');
         } catch (error) {
-            alert('জব পোস্ট করা যায়নি: ' + error.message);
+            alert('ত্রুটি: ' + error.message);
         }
     }
 
-    // Load Active Jobs Realtime
     function loadActiveJobs() {
         db.collection("jobs").where("status", "==", "approved").onSnapshot(snapshot => {
             const jobList = document.getElementById('active-job-list');
@@ -304,19 +427,19 @@
             jobList.innerHTML = '';
             snapshot.forEach(doc => {
                 const job = doc.data();
+                const jobId = doc.id;
                 jobList.innerHTML += `
                     <div class="job-item">
                         <b>• ${escapeHtml(job.title)}</b>
                         <p><small>${escapeHtml(job.desc)}</small></p>
                         <p style="color:#27ae60;"><b>পুরস্কার: ${job.reward} ৳</b></p>
-                        <button class="btn" style="padding:5px;" onclick="alert('কাজ শুরুর প্রক্রিয়া শুরু হচ্ছে...')">কাজটি করুন</button>
+                        <button class="btn" style="padding:6px; font-size:14px;" onclick="openJobProofForm('${jobId}', '${escapeHtml(job.title)}', ${job.reward})">কাজ শুরু ও প্রমাণ সাবমিট করুন</button>
                     </div>
                 `;
             });
         });
     }
 
-    // Withdraw Request
     async function processWithdrawal() {
         const user = auth.currentUser;
         const amount = parseFloat(document.getElementById('withdraw-amount').value);
@@ -370,4 +493,4 @@
 </script>
 
 </body>
-</html>
+            </html>
