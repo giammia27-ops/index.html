@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnMoney - ইনকাম ও জব পোস্ট প্ল্যাটফর্ম</title>
+    <title>EarnMoney - ফ্রিতে ইনকাম করুন</title>
     <style>
         * { box-sizing: border-box; font-family: Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; color: #333; padding: 15px; }
@@ -19,20 +19,14 @@
         .hidden { display: none; }
         .tab-btn { width: 48%; display: inline-block; padding: 8px; text-align: center; background: #ddd; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .tab-btn.active { background: #3498db; color: #fff; }
-        .job-item { background: #fff; padding: 12px; border-radius: 5px; margin-top: 8px; border: 1px solid #ddd; }
-        .ref-box { background: #fff3cd; color: #856404; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin: 6px 0; }
-        .proof-box { background: #e8f8f5; border: 2px dashed #1abc9c; padding: 12px; border-radius: 6px; margin-top: 10px; }
-        .calc-box { background: #eaf2f8; padding: 10px; border-radius: 5px; margin: 8px 0; font-size: 14px; }
-        .admin-card { background: #fcf3cf; border: 2px solid #f39c12; padding: 12px; border-radius: 8px; margin-top: 20px; }
-        .deposit-req-item, .proof-item { background: #fff; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ddd; font-size: 13px; }
-        .img-preview { max-width: 100%; height: auto; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        .job-item { background: #fff; padding: 10px; border-radius: 5px; margin-top: 8px; border: 1px solid #ddd; }
+        .ref-box { background: #fff3cd; color: #856404; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin: 6px 0; word-break: break-all; }
     </style>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 
@@ -45,6 +39,7 @@
             <span id="tab-reg-btn" class="tab-btn" onclick="switchAuthTab('reg')">রেজিস্ট্রেশন</span>
         </div>
 
+        <!-- Login Form -->
         <form id="login-form" onsubmit="handleLogin(event)">
             <h2>ইউজার লগইন</h2>
             <input type="email" id="login-email" placeholder="ইমেইল দিন" required>
@@ -52,6 +47,7 @@
             <button class="btn" type="submit">লগইন করুন</button>
         </form>
 
+        <!-- Register Form -->
         <form id="reg-form" class="hidden" onsubmit="handleRegister(event)">
             <h2>নতুন অ্যাকাউন্ট তৈরি</h2>
             <input type="text" id="reg-name" placeholder="আপনার নাম" required>
@@ -72,75 +68,28 @@
             <h1 id="user-balance">০.০০ ৳</h1>
         </div>
 
-        <!-- Deposit Section -->
-        <div class="card" style="border-left-color: #27ae60;">
-            <h4>💳 ডিপোজিট করুন (ব্যালেন্স যোগ করুন)</h4>
-            <p><small>বিকাশ/নগদ Personal Number: <b>01795190524</b></small></p>
-            <p><small style="color:red;">* সর্বনিম্ন ৫০ টাকা। টাকা পাঠিয়ে TrxID দিন। অ্যাডমিন চেক করে এপ্রুভ করলে ব্যালেন্স যোগ হবে।</small></p>
-            <select id="deposit-method">
-                <option value="bkash">বিকাশ (Bkash)</option>
-                <option value="nagad">নগদ (Nagad)</option>
-            </select>
-            <input type="number" id="deposit-amount" placeholder="ডিপোজিট পরিমাণ (সর্বনিম্ন ৫০৳)">
-            <input type="text" id="deposit-acc" placeholder="যে নম্বর থেকে টাকা পাঠিয়েছেন">
-            <input type="text" id="deposit-trxid" placeholder="Transaction ID (TrxID)">
-            <button class="btn" style="background:#27ae60;" onclick="submitDeposit()">ডিপোজিট রিকোয়েস্ট পাঠান</button>
-        </div>
-
-        <!-- Post a Job Section -->
-        <div class="card" style="border-left-color: #e67e22;">
-            <h4>➕ নতুন কাজ (জব) পোস্ট করুন</h4>
-            <input type="text" id="job-title" placeholder="কাজের নাম (যেমন: ইউটিউব চ্যানেল সাবস্ক্রাইব)">
-            <textarea id="job-desc" placeholder="কাজের বিস্তারিত নিয়মাবলী..." rows="2"></textarea>
-            <input type="number" id="job-workers" placeholder="কতজন মানুষ কাজ করবে? (যেমন: ১০)" oninput="calculateJobCost()">
-            <input type="number" id="job-reward" placeholder="প্রতিটি কাজের জন্য কত টাকা দিবেন? (যেমন: ৩)" oninput="calculateJobCost()">
-            
-            <div class="calc-box">
-                <p>কাজের মোট বাজেট: <b id="calc-work-cost">০.০০</b> ৳</p>
-                <p>অ্যাডমিন চার্জ: <b>৫.০০</b> ৳</p>
-                <hr style="margin:5px 0;">
-                <p style="color:#e67e22;"><b>মোট কাটা হবে: <span id="calc-total-cost">০.০০</span> ৳</b></p>
-            </div>
-            <p><small style="color:red;">* সর্বনিম্ন মোট কাজ ৫০ টাকার হতে হবে। অ্যাডমিন ফি ৫ টাকা কাটবে।</small></p>
-            <button class="btn" style="background:#e67e22;" onclick="submitJobPost()">জব পোস্ট করুন (টাকা কাটা যাবে)</button>
-        </div>
-
-        <!-- Employer Job Proof Review Section -->
-        <div class="card" style="border-left-color: #8e44ad;">
-            <h4>🔍 আপনার পোস্ট করা কাজের জমা পড়া প্রুফ দেখুন</h4>
-            <p><small>কাস্টমাররা আপনার কাজে প্রুফ জমা দিলে এখানে আসবে। চেক করে এপ্রুভ করলে তার ব্যালেন্সে টাকা যাবে।</small></p>
-            <div id="my-posted-jobs-proofs">
-                <p style="text-align:center;"><small>কোনো পেন্ডিং প্রুফ নেই</small></p>
-            </div>
-        </div>
-
-        <!-- Micro Jobs List -->
-        <div class="card" style="border-left-color: #1abc9c;">
-            <h4>💼 উপলব্ধ কাজসমূহ (কাজ সম্পন্ন করুন)</h4>
-            <div id="active-job-list">
-                <p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>
-            </div>
-        </div>
-
         <!-- Refer Section -->
-        <div class="card" style="border-left-color: #f1c40f;">
+        <div class="card" style="border-left-color: #27ae60;">
             <h4>👥 রেফার করে ইনকাম</h4>
-            <p><small>প্রতি সফল রেফারে পাবেন ৫ টাকা বোনাস!</small></p>
+            <p><small>আপনার বন্ধুরা আপনার রেফার কোড ব্যবহার করে অ্যাকাউন্ট খুললে প্রতি রেফারে পাবেন ৫ টাকা!</small></p>
             <div class="ref-box" id="my-ref-code">আপনার কোড: ...</div>
+            <p style="text-align:center;"><small>মোট সফল রেফার: <b id="total-refers-count">০</b> টি</small></p>
         </div>
 
         <!-- Gmail Sell Section -->
         <div class="card" style="border-left-color: #9b59b6;">
-            <h4>📧 জিমেইল বিক্রি করুন (প্রতিটি ২০৳)</h4>
+            <h4>📧 জিমেইল বিক্রি করুন (প্রতিটি ১০৳ - ১৫৳)</h4>
+            <p><small>নতুন ফ্রেশ জিমেইল তৈরি করে তথ্যগুলো জমা দিন। অ্যাডমিন চেক করে ব্যালেন্স যোগ করে দেবে।</small></p>
             <input type="email" id="sell-gmail-email" placeholder="জিমেইল এড্রেস">
             <input type="text" id="sell-gmail-pass" placeholder="পাসওয়ার্ড">
             <input type="email" id="sell-gmail-rec" placeholder="রিকভারি ইমেইল">
-            <button class="btn" style="background:#9b59b6;" onclick="submitGmailSell()">জিমেইল জমা দিন (২০৳)</button>
+            <button class="btn" style="background:#9b59b6;" onclick="submitGmailSell()">জিমেইল বিক্রি জমা দিন</button>
         </div>
 
         <!-- Telegram Task -->
         <div class="card">
             <h4>📢 টেলিগ্রাম চ্যানেলে জয়েন করুন</h4>
+            <p><small>আমাদের অফিশিয়াল চ্যানেলে জয়েন করলেই পাবেন ৫ টাকা!</small></p>
             <a href="https://t.me/botfather012" target="_blank" class="btn-telegram">টেলিগ্রামে জয়েন করুন ❤️</a>
             <button class="btn" style="background:#2980b9;" onclick="claimTelegramBonus()">বোনাস দাবি করুন (+৫৳)</button>
         </div>
@@ -149,6 +98,23 @@
         <div class="card">
             <h4>🎁 ডেইলি বোনাস</h4>
             <button class="btn" onclick="claimDailyBonus()">আজকের বোনাস নিন (+২৳)</button>
+        </div>
+
+        <!-- Micro Jobs & Job List -->
+        <div class="card" style="border-left-color: #1abc9c;">
+            <h4>💼 মাইক্রো জব (কাজ সম্পন্ন করুন)</h4>
+            <div id="active-job-list">
+                <p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>
+            </div>
+        </div>
+
+        <!-- Post a Job -->
+        <div class="card" style="border-left-color: #e67e22;">
+            <h4>➕ নতুন কাজ (জব) পোস্ট করুন</h4>
+            <input type="text" id="job-title" placeholder="কাজের নাম (যেমন: ইউটিউব সাবস্ক্রাইব)">
+            <textarea id="job-desc" placeholder="কাজের বিবরণ লিখুন..." rows="2"></textarea>
+            <input type="number" id="job-reward" placeholder="ইউজার কত টাকা পাবে?">
+            <button class="btn" style="background:#e67e22;" onclick="submitJobPost()">জব পোস্ট জমা দিন</button>
         </div>
 
         <!-- Withdraw -->
@@ -164,22 +130,12 @@
             <button class="btn" onclick="processWithdrawal()">উইথড্র দিন</button>
         </div>
 
-        <!-- Admin Panel -->
-        <div class="admin-card">
-            <h4>👑 অ্যাডমিন কন্ট্রোল প্যানেল (ডিপোজিট এপ্রুভাল)</h4>
-            <p><small>এখানে পেন্ডিং থাকা ডিপোজিট চেক করে এপ্রুভ করুন। এপ্রুভ করলে ইউজারের ওয়ালেটে টাকা যোগ হবে।</small></p>
-            <div id="pending-deposits-list">
-                <p style="text-align:center;"><small>কোনো প্যান্ডিং ডিপোজিট নেই</small></p>
-            </div>
-        </div>
-
-        <button class="btn btn-danger" style="margin-top:20px;" onclick="logout()">লগআউট</button>
+        <button class="btn btn-danger" onclick="logout()">লগআউট</button>
     </div>
 
 </div>
 
 <script>
-    // Firebase Config Integrated
     const firebaseConfig = {
         apiKey: "AIzaSyDP4p2d95_JzBSeUcSiwVlOqd61eZ6Gnfo",
         authDomain: "earnmoney1k-fdc54.firebaseapp.com",
@@ -193,7 +149,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     let currentUserData = null;
 
@@ -219,6 +174,7 @@
         }
     }
 
+    // Register with Fully Working Refer System
     async function handleRegister(e) {
         e.preventDefault();
         const name = document.getElementById('reg-name').value;
@@ -227,32 +183,51 @@
         const refCodeInput = document.getElementById('ref-code-input').value.trim();
 
         try {
+            let referrerDocId = null;
+            let referrerCurrentBalance = 0;
+            let referrerCurrentTotalRefers = 0;
+
+            // ১. রেফার কোড দেওয়া থাকলে তা ডেটাবেসে চেক করা
+            if (refCodeInput !== "") {
+                const referrerQuery = await db.collection("users").where("referCode", "==", refCodeInput).get();
+                if (!referrerQuery.empty) {
+                    const doc = referrerQuery.docs[0];
+                    referrerDocId = doc.id;
+                    referrerCurrentBalance = doc.data().balance || 0;
+                    referrerCurrentTotalRefers = doc.data().totalRefers || 0;
+                } else {
+                    alert('প্রদত্ত রেফার কোডটি সঠিক নয়! সঠিক কোড দিন অথবা ঘরটি খালি রাখুন।');
+                    return;
+                }
+            }
+
+            // ২. নতুন ইউজার অ্যাকাউন্ট তৈরি
             const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
             const user = userCredential.user;
             const myRefCode = "REF" + Math.floor(100000 + Math.random() * 900000);
 
-            if (refCodeInput !== "") {
-                const referrerQuery = await db.collection("users").where("referCode", "==", refCodeInput).get();
-                if (!referrerQuery.empty) {
-                    const referrerDoc = referrerQuery.docs[0];
-                    const currentBalance = referrerDoc.data().balance || 0;
-                    await db.collection("users").doc(referrerDoc.id).update({
-                        balance: currentBalance + 5
-                    });
-                }
+            // ৩. রেফারকারীকে ৫ টাকা বোনাস এবং মোট রেফার গণনা বাড়ানো
+            if (referrerDocId) {
+                await db.collection("users").doc(referrerDocId).update({
+                    balance: referrerCurrentBalance + 5,
+                    totalRefers: referrerCurrentTotalRefers + 1
+                });
             }
 
+            // ৪. নতুন ইউজারের তথ্য সেভ করা
             await db.collection("users").doc(user.uid).set({
                 name: name,
                 email: email,
-                balance: 10,
+                balance: 10, // রেজিস্ট্রেশন বোনাস ১০৳
                 referCode: myRefCode,
+                referredBy: refCodeInput !== "" ? refCodeInput : "NONE",
+                totalRefers: 0,
                 telegramClaimed: false,
                 dailyBonusClaimed: false,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert('রেজিস্ট্রেশন সফল হয়েছে!');
+            alert('রেজিস্ট্রেশন সফল হয়েছে! আপনার রেজিস্ট্রেশন বোনাস ১০৳ যোগ করা হয়েছে।');
         } catch (error) {
             alert('ত্রুটি: ' + error.message);
         }
@@ -275,15 +250,14 @@
             if (doc.exists) {
                 currentUserData = doc.data();
                 document.getElementById('user-name-display').innerText = currentUserData.name;
-                document.getElementById('user-balance').innerText = currentUserData.balance.toFixed(2) + " ৳";
+                document.getElementById('user-balance').innerText = (currentUserData.balance || 0).toFixed(2) + " ৳";
                 document.getElementById('my-ref-code').innerText = "আপনার রেফার কোড: " + (currentUserData.referCode || 'N/A');
+                document.getElementById('total-refers-count').innerText = currentUserData.totalRefers || 0;
                 showDashboardSection();
             }
         });
 
         loadActiveJobs();
-        loadPendingDeposits();
-        loadEmployerJobProofs(uid);
     }
 
     function showDashboardSection() {
@@ -300,292 +274,7 @@
         auth.signOut();
     }
 
-    async function submitDeposit() {
-        const user = auth.currentUser;
-        const amount = parseFloat(document.getElementById('deposit-amount').value);
-        const acc = document.getElementById('deposit-acc').value.trim();
-        const trxid = document.getElementById('deposit-trxid').value.trim();
-        const method = document.getElementById('deposit-method').value;
-
-        if (!amount || amount < 50) {
-            alert('সর্বনিম্ন ৫০ টাকা ডিপোজিট করতে হবে!');
-            return;
-        }
-
-        if (!acc || !trxid) {
-            alert('মোবাইল নম্বর এবং Transaction ID সঠিকভাবে পূরণ করুন!');
-            return;
-        }
-
-        try {
-            await db.collection("deposits").add({
-                userId: user.uid,
-                userEmail: currentUserData.email,
-                amount: amount,
-                method: method,
-                account: acc,
-                trxid: trxid,
-                status: "pending",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            document.getElementById('deposit-amount').value = '';
-            document.getElementById('deposit-acc').value = '';
-            document.getElementById('deposit-trxid').value = '';
-            alert('ডিপোজিট রিকোয়েস্ট জমা হয়েছে!');
-        } catch (error) {
-            alert('ডিপোজিট জমা নেওয়া সম্ভব হয়নি: ' + error.message);
-        }
-    }
-
-    function loadPendingDeposits() {
-        db.collection("deposits").where("status", "==", "pending").onSnapshot(snapshot => {
-            const container = document.getElementById('pending-deposits-list');
-            if (snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center;"><small>কোনো প্যান্ডিং ডিপোজিট নেই</small></p>';
-                return;
-            }
-
-            container.innerHTML = '';
-            snapshot.forEach(doc => {
-                const dep = doc.data();
-                const depId = doc.id;
-                container.innerHTML += `
-                    <div class="deposit-req-item">
-                        <p><b>ইউজার:</b> ${escapeHtml(dep.userEmail)}</p>
-                        <p><b>মেথড:</b> ${dep.method.toUpperCase()} | <b>পরিমাণ:</b> ${dep.amount} ৳</p>
-                        <p><b>প্রেরক নম্বর:</b> ${escapeHtml(dep.account)}</p>
-                        <p><b>TrxID:</b> <b style="color:#d35400;">${escapeHtml(dep.trxid)}</b></p>
-                        <div style="margin-top: 6px;">
-                            <button onclick="approveDeposit('${depId}', '${dep.userId}', ${dep.amount})" style="background:#27ae60; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; font-weight:bold;">Approve</button>
-                            <button onclick="rejectDeposit('${depId}')" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; font-weight:bold; margin-left:5px;">Reject</button>
-                        </div>
-                    </div>
-                `;
-            });
-        });
-    }
-
-    async function approveDeposit(depositId, userId, amount) {
-        try {
-            const userDoc = await db.collection("users").doc(userId).get();
-            if (userDoc.exists) {
-                const currentBalance = userDoc.data().balance || 0;
-                await db.collection("users").doc(userId).update({ balance: currentBalance + amount });
-                await db.collection("deposits").doc(depositId).update({ status: "approved" });
-                alert("ডিপোজিট এপ্রুভ করা হয়েছে!");
-            }
-        } catch (error) {
-            alert("ত্রুটি: " + error.message);
-        }
-    }
-
-    async function rejectDeposit(depositId) {
-        try {
-            await db.collection("deposits").doc(depositId).update({ status: "rejected" });
-            alert("বাতিল করা হয়েছে!");
-        } catch (error) {
-            alert("ত্রুটি: " + error.message);
-        }
-    }
-
-    function calculateJobCost() {
-        const workers = parseInt(document.getElementById('job-workers').value) || 0;
-        const reward = parseFloat(document.getElementById('job-reward').value) || 0;
-        const workCost = workers * reward;
-        const totalCost = workCost + (workCost > 0 ? 5 : 0);
-
-        document.getElementById('calc-work-cost').innerText = workCost.toFixed(2);
-        document.getElementById('calc-total-cost').innerText = totalCost.toFixed(2);
-    }
-
-    async function submitJobPost() {
-        const user = auth.currentUser;
-        const title = document.getElementById('job-title').value;
-        const desc = document.getElementById('job-desc').value;
-        const workers = parseInt(document.getElementById('job-workers').value);
-        const reward = parseFloat(document.getElementById('job-reward').value);
-
-        if (!title || !desc || !workers || !reward || workers <= 0 || reward <= 0) {
-            alert('জব পোস্টের সমস্ত তথ্য সঠিকভাবে পূরণ করুন!');
-            return;
-        }
-
-        const workCost = workers * reward;
-        if (workCost < 50) {
-            alert('কাজের মোট বাজেট সর্বনিম্ন ৫০ টাকা হতে হবে!');
-            return;
-        }
-
-        const totalDeduct = workCost + 5;
-        if (currentUserData.balance < totalDeduct) {
-            alert(`পর্যাপ্ত টাকা নেই! মোট ${totalDeduct} টাকা লাগবে।`);
-            return;
-        }
-
-        try {
-            await db.collection("users").doc(user.uid).update({ balance: currentUserData.balance - totalDeduct });
-            await db.collection("jobs").add({
-                employerId: user.uid,
-                userEmail: currentUserData.email,
-                title: title,
-                desc: desc,
-                totalWorkers: workers,
-                rewardPerWorker: reward,
-                status: "approved",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            document.getElementById('job-title').value = '';
-            document.getElementById('job-desc').value = '';
-            document.getElementById('job-workers').value = '';
-            document.getElementById('job-reward').value = '';
-            calculateJobCost();
-            alert(`জব পোস্ট সফল হয়েছে! ${totalDeduct} টাকা কাটা হয়েছে।`);
-        } catch (error) {
-            alert('ত্রুটি: ' + error.message);
-        }
-    }
-
-    function loadActiveJobs() {
-        db.collection("jobs").where("status", "==", "approved").onSnapshot(snapshot => {
-            const jobList = document.getElementById('active-job-list');
-            if (snapshot.empty) {
-                jobList.innerHTML = '<p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>';
-                return;
-            }
-
-            jobList.innerHTML = '';
-            snapshot.forEach(doc => {
-                const job = doc.data();
-                const jobId = doc.id;
-                
-                const reward = job.rewardPerWorker || job.reward || 0;
-                const workers = job.totalWorkers || job.workers || 0;
-
-                jobList.innerHTML += `
-                    <div class="job-item">
-                        <b style="color:#2c3e50;">• ${escapeHtml(job.title)}</b>
-                        <p style="margin:5px 0;"><small>${escapeHtml(job.desc)}</small></p>
-                        <p style="color:#27ae60; font-size:14px;"><b>পুরস্কার: ${reward} ৳</b> (প্রয়োজনীয় ওয়ার্কার: ${workers})</p>
-                        <button class="btn" style="padding:6px; font-size:13px;" onclick="toggleProofForm('${jobId}')">কাজ শুরু ও প্রমাণ সাবমিট করুন</button>
-                        
-                        <div id="proof-form-${jobId}" class="proof-box hidden">
-                            <h5 style="color:#16a085;">কাজ: ${escapeHtml(job.title)}</h5>
-                            <textarea id="proof-text-${jobId}" placeholder="কাজের প্রমাণের বিবরণ লিখুন..." rows="2"></textarea>
-                            <label style="font-size:12px; font-weight:bold;">প্রমাণের স্ক্রিনশট/ছবি দিন:</label>
-                            <input type="file" id="proof-img-${jobId}" accept="image/*">
-                            <button class="btn" style="background:#1abc9c;" onclick="submitJobProofWithImage('${jobId}', '${job.employerId}', '${escapeHtml(job.title)}', ${reward})">প্রমাণ জমা দিন</button>
-                            <button class="btn btn-danger" style="padding:4px; font-size:12px;" onclick="toggleProofForm('${jobId}')">বাতিল</button>
-                        </div>
-                    </div>
-                `;
-            });
-        });
-    }
-
-    function toggleProofForm(jobId) {
-        const form = document.getElementById(`proof-form-${jobId}`);
-        if (form) {
-            form.classList.toggle('hidden');
-        }
-    }
-
-    async function submitJobProofWithImage(jobId, employerId, jobTitle, reward) {
-        const proofText = document.getElementById(`proof-text-${jobId}`).value;
-        const fileInput = document.getElementById(`proof-img-${jobId}`);
-        const file = fileInput.files[0];
-
-        if (!proofText && !file) {
-            alert('কাজের বিবরণ লিখুন অথবা স্ক্রিনশট সিলেক্ট করুন!');
-            return;
-        }
-
-        const user = auth.currentUser;
-        let imageUrl = "";
-
-        try {
-            if (file) {
-                const storageRef = storage.ref(`job_proofs/${user.uid}_${Date.now()}_${file.name}`);
-                const snapshot = await storageRef.put(file);
-                imageUrl = await snapshot.ref.getDownloadURL();
-            }
-
-            await db.collection("job_proofs").add({
-                jobId: jobId,
-                employerId: employerId,
-                jobTitle: jobTitle,
-                workerId: user.uid,
-                workerEmail: currentUserData.email,
-                proofText: proofText,
-                screenshotUrl: imageUrl,
-                reward: reward,
-                status: "pending",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert('আপনার কাজের প্রমাণ জমা হয়েছে!');
-            toggleProofForm(jobId);
-        } catch (error) {
-            alert('ত্রুটি: ' + error.message);
-        }
-    }
-
-    function loadEmployerJobProofs(employerUid) {
-        db.collection("job_proofs")
-          .where("employerId", "==", employerUid)
-          .where("status", "==", "pending")
-          .onSnapshot(snapshot => {
-            const container = document.getElementById('my-posted-jobs-proofs');
-            if (snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center;"><small>কোনো পেন্ডিং প্রুফ নেই</small></p>';
-                return;
-            }
-
-            container.innerHTML = '';
-            snapshot.forEach(doc => {
-                const proof = doc.data();
-                const proofId = doc.id;
-                container.innerHTML += `
-                    <div class="proof-item">
-                        <p><b>কাজ:</b> ${escapeHtml(proof.jobTitle)}</p>
-                        <p><b>ওয়ার্কার:</b> ${escapeHtml(proof.workerEmail)}</p>
-                        <p><b>বিবরণ:</b> ${escapeHtml(proof.proofText || 'N/A')}</p>
-                        ${proof.screenshotUrl ? `<a href="${proof.screenshotUrl}" target="_blank"><img src="${proof.screenshotUrl}" class="img-preview" alt="Proof Image"></a>` : '<p><small>কোনো ছবি দেওয়া হয়নি</small></p>'}
-                        <p style="color:#27ae60;"><b>পুরস্কার: ${proof.reward} ৳</b></p>
-                        <div style="margin-top:6px;">
-                            <button onclick="approveJobProof('${proofId}', '${proof.workerId}', ${proof.reward})" style="background:#27ae60; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; font-weight:bold;">Approve & Pay</button>
-                            <button onclick="rejectJobProof('${proofId}')" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; font-weight:bold; margin-left:5px;">Reject</button>
-                        </div>
-                    </div>
-                `;
-            });
-        });
-    }
-
-    async function approveJobProof(proofId, workerId, reward) {
-        try {
-            const workerDoc = await db.collection("users").doc(workerId).get();
-            if (workerDoc.exists) {
-                const currentBalance = workerDoc.data().balance || 0;
-                await db.collection("users").doc(workerId).update({ balance: currentBalance + reward });
-                await db.collection("job_proofs").doc(proofId).update({ status: "approved" });
-                alert("কাজটি এপ্রুভ হয়েছে এবং টাকা দেওয়া হয়েছে!");
-            }
-        } catch (error) {
-            alert("ত্রুটি: " + error.message);
-        }
-    }
-
-    async function rejectJobProof(proofId) {
-        try {
-            await db.collection("job_proofs").doc(proofId).update({ status: "rejected" });
-            alert("কাজটি বাতিল করা হয়েছে!");
-        } catch (error) {
-            alert("ত্রুটি: " + error.message);
-        }
-    }
-
+    // Submit Gmail Sell
     async function submitGmailSell() {
         const user = auth.currentUser;
         const gEmail = document.getElementById('sell-gmail-email').value;
@@ -593,7 +282,7 @@
         const gRec = document.getElementById('sell-gmail-rec').value;
 
         if(!gEmail || !gPass || !gRec) {
-            alert('জিমেইলের সমস্ত তথ্য পুরন করুন!');
+            alert('জিমেইলের সমস্ত তথ্য সঠিকভাবে পূরণ করুন!');
             return;
         }
 
@@ -604,7 +293,6 @@
                 gmailAddress: gEmail,
                 gmailPassword: gPass,
                 recoveryEmail: gRec,
-                rate: 20,
                 status: "pending",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -612,9 +300,33 @@
             document.getElementById('sell-gmail-email').value = '';
             document.getElementById('sell-gmail-pass').value = '';
             document.getElementById('sell-gmail-rec').value = '';
-            alert('২০ টাকা রেটে জিমেইল বিক্রির তথ্য জমা হয়েছে!');
+            alert('জিমেইল বিক্রির তথ্য জমা হয়েছে! যাচাই করে রিভিউ শেষে ব্যালেন্স যোগ করা হবে।');
         } catch (error) {
-            alert('ত্রুটি: ' + error.message);
+            alert('জমা নেওয়া সম্ভব হয়নি: ' + error.message);
+        }
+    }
+
+    // Submit Job Proof
+    async function completeJob(jobId, jobTitle, reward) {
+        const proof = prompt(`"${jobTitle}" কাজটির বিবরণ সম্পূর্ণ করেছেন? আপনার ইউজারনেম বা কাজের প্রমাণের বিবরণ নিচে লিখুন:`);
+        if (!proof) return;
+
+        const user = auth.currentUser;
+        try {
+            await db.collection("job_proofs").add({
+                jobId: jobId,
+                jobTitle: jobTitle,
+                userId: user.uid,
+                userEmail: currentUserData.email,
+                proof: proof,
+                reward: reward,
+                status: "pending",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert('আপনার কাজের প্রমাণ জমা হয়েছে! অ্যাডমিন চেক করে ব্যালেন্স যোগ করে দেবে।');
+        } catch (error) {
+            alert('প্রমাণ জমা দেওয়া যায়নি: ' + error.message);
         }
     }
 
@@ -632,7 +344,7 @@
             telegramClaimed: true
         });
 
-        alert('টেলিগ্রাম জয়েন বোনাস ৫ টাকা যোগ করা হয়েছে!');
+        alert('টেলিগ্রাম জয়েন বোনাস ৫ টাকা যোগ করা হয়েছে!');
     }
 
     async function claimDailyBonus() {
@@ -640,7 +352,7 @@
         if (!user || !currentUserData) return;
 
         if (currentUserData.dailyBonusClaimed) {
-            alert('আজকের ডেইলি বোনাস আগেই নেওয়া হয়েছে!');
+            alert('আজকের ডেইলি বোনাস আগেই নেওয়া হয়েছে!');
             return;
         }
 
@@ -649,7 +361,61 @@
             dailyBonusClaimed: true
         });
 
-        alert('ডেইলি বোনাস ২ টাকা যোগ করা হয়েছে!');
+        alert('ডেইলি বোনাস ২ টাকা যোগ করা হয়েছে!');
+    }
+
+    async function submitJobPost() {
+        const user = auth.currentUser;
+        const title = document.getElementById('job-title').value;
+        const desc = document.getElementById('job-desc').value;
+        const reward = parseFloat(document.getElementById('job-reward').value);
+
+        if(!title || !desc || !reward) {
+            alert('জব পোস্টের সবকটি তথ্য সঠিকভাবে লিখুন!');
+            return;
+        }
+
+        try {
+            await db.collection("jobs").add({
+                userId: user.uid,
+                title: title,
+                desc: desc,
+                reward: reward,
+                status: "approved",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            document.getElementById('job-title').value = '';
+            document.getElementById('job-desc').value = '';
+            document.getElementById('job-reward').value = '';
+            alert('জব পোস্ট সফলভাবে যুক্ত হয়েছে!');
+        } catch (error) {
+            alert('জব পোস্ট করা যায়নি: ' + error.message);
+        }
+    }
+
+    function loadActiveJobs() {
+        db.collection("jobs").where("status", "==", "approved").onSnapshot(snapshot => {
+            const jobList = document.getElementById('active-job-list');
+            if (snapshot.empty) {
+                jobList.innerHTML = '<p style="text-align:center;"><small>কোনো সক্রিয় কাজ নেই</small></p>';
+                return;
+            }
+
+            jobList.innerHTML = '';
+            snapshot.forEach(doc => {
+                const job = doc.data();
+                const jobId = doc.id;
+                jobList.innerHTML += `
+                    <div class="job-item">
+                        <b>• ${escapeHtml(job.title)}</b>
+                        <p><small>${escapeHtml(job.desc)}</small></p>
+                        <p style="color:#27ae60;"><b>পুরস্কার: ${job.reward} ৳</b></p>
+                        <button class="btn" style="padding:6px; font-size:14px;" onclick="completeJob('${jobId}', '${escapeHtml(job.title)}', ${job.reward})">কাজটি শুরু করুন / প্রমাণ দিন</button>
+                    </div>
+                `;
+            });
+        });
     }
 
     async function processWithdrawal() {
@@ -688,14 +454,13 @@
                 balance: currentUserData.balance - amount
             });
 
-            alert('উইথড্র রিকোয়েস্ট জমা হয়েছে!');
+            alert('উইথড্র রিকোয়েস্ট জমা হয়েছে!');
         } catch (error) {
-            alert('উইথড্র ব্যর্থ হয়েছে: ' + error.message);
+            alert('উইথড্র ব্যর্থ হয়েছে: ' + error.message);
         }
     }
 
     function escapeHtml(text) {
-        if (!text) return "";
         return text
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
